@@ -69,6 +69,19 @@ Group:		Documentation
 %description apidocs
 lightdm API documentation.
 
+
+%package upstart
+Summary:	Upstart job for lightdm
+Summary(hu.UTF-8):	Upstart támogatás lightdm-hez
+Group:		Daemons
+
+%description upstart
+Upstart job for lightdm.
+
+%description upstart -l hu.UTF-8
+Upstart támogatás lightdm-hez.
+
+
 %prep
 %setup -q
 
@@ -85,6 +98,12 @@ rm -rf $RPM_BUILD_ROOT
 %clean
 rm -rf $RPM_BUILD_ROOT
 
+%post upstart
+%upstart_post lightdm
+
+%postun upstart
+%upstart_postun lightdm
+
 %files
 %defattr(644,root,root,755)
 %doc AUTHORS ChangeLog NEWS README
@@ -96,7 +115,6 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man1/lightdm*
 %{_sysconfdir}/dbus-1/system.d/org.lightdm.LightDisplayManager.conf
 %{_sysconfdir}/%{name}.conf
-%{_sysconfdir}/init/%{name}.conf
 
 %files themes-core
 %defattr(644,root,root,755)
@@ -120,3 +138,7 @@ rm -rf $RPM_BUILD_ROOT
 %files apidocs
 %defattr(644,root,root,755)
 %{_datadir}/gtk-doc/html/ldmgreeter
+
+%files upstart
+%defattr(644,root,root,755)
+%{_sysconfdir}/init/%{name}.conf
