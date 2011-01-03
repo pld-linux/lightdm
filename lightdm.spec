@@ -1,21 +1,26 @@
 Summary:	A lightweight display manager
 Summary(hu.UTF-8):	Egy könnyűsúlyú bejelentkezéskezelő
 Name:		lightdm
-Version:	0.1.2
+Version:	0.2.2
 Release:	0.1
 License:	GPL v3
 Group:		X11/Applications
 Source0:	http://launchpad.net/lightdm/trunk/%{version}/+download/%{name}-%{version}.tar.gz
-# Source0-md5:	a13fcf17c19691bf7cc6ef0c55142901
+# Source0-md5:	143cd786a28e93ed2728b0b4afe7068d
 URL:		https://launchpad.net/lightdm
+BuildRequires:	QtDBus-devel
 BuildRequires:	dbus-glib-devel
 BuildRequires:	gettext-devel
 BuildRequires:	gnome-doc-utils
 BuildRequires:	gtk-webkit-devel
 BuildRequires:	intltool
+BuildRequires:	libxklavier-devel
+BuildRequires:	pam-devel
 BuildRequires:	perl-XML-Parser
 BuildRequires:	perl-base
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
+
+%define         skip_post_check_so	liblightdm-qt-0.so.0.0.0
 
 %description
 An X display manager that:
@@ -86,7 +91,13 @@ Upstart támogatás lightdm-hez.
 %setup -q
 
 %build
-%configure
+%{__libtoolize}
+%{__aclocal}
+%{__autoconf}
+%{__autoheader}
+%{__automake}
+%configure \
+	--with-theme-dir=%{_datadir}/%{name}/themes
 %{__make}
 
 %install
@@ -108,12 +119,13 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %doc AUTHORS ChangeLog NEWS README
 %attr(755,root,root) %{_bindir}/*
+%{_libdir}/liblightdm-gobject-0.so.0.0.0
+%{_libdir}/liblightdm-qt-0.so.0.0.0
 %dir %{_datadir}/%{name}
 %dir %{_datadir}/%{name}/themes
-%attr(755,root,root) %{_libdir}/libldmgreeter.so.0.0.0
-%{_libdir}/girepository-1.0/LightDMGreeter-0.typelib
+%{_libdir}/girepository-1.0/LightDM-0.typelib
 %{_mandir}/man1/lightdm*
-%{_sysconfdir}/dbus-1/system.d/org.lightdm.LightDisplayManager.conf
+/etc/dbus-1/system.d/org.lightdm.LightDisplayManager.conf
 %{_sysconfdir}/%{name}.conf
 
 %files themes-core
@@ -125,19 +137,22 @@ rm -rf $RPM_BUILD_ROOT
 
 %files static
 %defattr(644,root,root,755)
-%{_libdir}/libldmgreeter.a
+%{_libdir}/liblightdm-gobject-0.a
+%{_libdir}/liblightdm-qt-0.a
 
 %files devel
 %defattr(644,root,root,755)
-%{_libdir}/libldmgreeter.la
-%{_libdir}/libldmgreeter.so
-%{_includedir}/lightdm-0
-%{_pkgconfigdir}/libldmgreeter-0.pc
-%{_datadir}/gir-1.0/LightDMGreeter-0.gir
+%{_libdir}/liblightdm-gobject-0.la
+%{_libdir}/liblightdm-qt-0.la
+%{_includedir}/lightdm-gobject-0
+%{_includedir}/lightdm-qt-0
+%{_pkgconfigdir}/liblightdm-gobject-0.pc
+%{_pkgconfigdir}/liblightdm-qt-0.pc
+%{_datadir}/gir-1.0/LightDM-0.gir
 
 %files apidocs
 %defattr(644,root,root,755)
-%{_datadir}/gtk-doc/html/ldmgreeter
+%{_datadir}/gtk-doc/html/lightdm-gobject-0
 
 %files upstart
 %defattr(644,root,root,755)
