@@ -38,7 +38,6 @@ Egy X bejelentkezéskezelő, amely:
  - teljesen témázható (a legkönnyebb a webkit felülettel)
  - desktop-független (üdvözlők bármilyen eszközkészlettel írhatók)
 
-
 %package themes-core
 Summary:	Core themes for lightdm
 Summary(hu.UTF-8):	Alap témák a ligthdm-hez
@@ -50,14 +49,12 @@ Core themes for lightdm.
 %description themes-core -l hu.UTF-8
 Alap témák a ligthdm-hez.
 
-
 %package static
 Summary:	Static library for lightdm development
 Group:		Development/Libraries
 
 %description static
 Static library for lightdm development.
-
 
 %package devel
 Summary:	Header files for lightdm development
@@ -66,14 +63,12 @@ Group:		Development/Libraries
 %description devel
 Header files for lightdm development.
 
-
 %package apidocs
 Summary:	lightdm API documentation
 Group:		Documentation
 
 %description apidocs
 lightdm API documentation.
-
 
 %package upstart
 Summary:	Upstart job for lightdm
@@ -85,7 +80,6 @@ Upstart job for lightdm.
 
 %description upstart -l hu.UTF-8
 Upstart támogatás lightdm-hez.
-
 
 %prep
 %setup -q
@@ -119,13 +113,16 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %doc AUTHORS ChangeLog NEWS README
 %attr(755,root,root) %{_bindir}/*
-%{_libdir}/liblightdm-gobject-0.so.0.0.0
-%{_libdir}/liblightdm-qt-0.so.0.0.0
+# missing ldconfig post?
+# missing ghost soname link?
+%attr(755,root,root) %{_libdir}/liblightdm-gobject-0.so.*.*.*
+%attr(755,root,root) %{_libdir}/liblightdm-qt-0.so.*.*.*
 %dir %{_datadir}/%{name}
 %dir %{_datadir}/%{name}/themes
 %{_libdir}/girepository-1.0/LightDM-0.typelib
 %{_mandir}/man1/lightdm*
 /etc/dbus-1/system.d/org.lightdm.LightDisplayManager.conf
+# missing config no replace?
 %{_sysconfdir}/%{name}.conf
 
 %files themes-core
@@ -156,4 +153,5 @@ rm -rf $RPM_BUILD_ROOT
 
 %files upstart
 %defattr(644,root,root,755)
+# missing config noreplace?
 %{_sysconfdir}/init/%{name}.conf
