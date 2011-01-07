@@ -2,11 +2,12 @@ Summary:	A lightweight display manager
 Summary(hu.UTF-8):	Egy könnyűsúlyú bejelentkezéskezelő
 Name:		lightdm
 Version:	0.2.2
-Release:	0.1
+Release:	0.2
 License:	GPL v3
 Group:		X11/Applications
 Source0:	http://launchpad.net/lightdm/trunk/%{version}/+download/%{name}-%{version}.tar.gz
 # Source0-md5:	143cd786a28e93ed2728b0b4afe7068d
+Source1:	%{name}.pamd
 URL:		https://launchpad.net/lightdm
 BuildRequires:	QtDBus-devel
 BuildRequires:	dbus-glib-devel
@@ -18,6 +19,7 @@ BuildRequires:	libxklavier-devel
 BuildRequires:	pam-devel
 BuildRequires:	perl-XML-Parser
 BuildRequires:	perl-base
+BuildRequires:	vala
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %define         skip_post_check_so	liblightdm-qt-0.so.0.0.0
@@ -40,14 +42,14 @@ Egy X bejelentkezéskezelő, amely:
 
 %package themes-core
 Summary:	Core themes for lightdm
-Summary(hu.UTF-8):	Alap témák a ligthdm-hez
+Summary(hu.UTF-8):	Alap témák a lightdm-hez
 Group:		Themes
 
 %description themes-core
 Core themes for lightdm.
 
 %description themes-core -l hu.UTF-8
-Alap témák a ligthdm-hez.
+Alap témák a lightdm-hez.
 
 %package static
 Summary:	Static library for lightdm development
@@ -85,12 +87,15 @@ Upstart támogatás lightdm-hez.
 %setup -q
 
 %build
+%{__gtkdocize}
 %{__libtoolize}
+%{__intltoolize}
 %{__aclocal}
 %{__autoconf}
 %{__autoheader}
 %{__automake}
 %configure \
+	--enable-gtk-doc \
 	--with-theme-dir=%{_datadir}/%{name}/themes
 %{__make}
 
@@ -100,8 +105,16 @@ rm -rf $RPM_BUILD_ROOT
 %{__make} install \
 	DESTDIR=$RPM_BUILD_ROOT
 
+install -d $RPM_BUILD_ROOT/etc/{pam.d,security} \
+	$RPM_BUILD_ROOT/var/log/lightdm
+install %{SOURCE1} $RPM_BUILD_ROOT/etc/pam.d/lightdm
+touch $RPM_BUILD_ROOT/etc/security/blacklist.lightdm
+
 %clean
 rm -rf $RPM_BUILD_ROOT
+
+%post	-p /sbin/ldconfig
+%postun	-p /sbin/ldconfig
 
 %post upstart
 %upstart_post lightdm
@@ -113,24 +126,26 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %doc AUTHORS ChangeLog NEWS README
 %attr(755,root,root) %{_bindir}/*
-# missing ldconfig post?
-# missing ghost soname link?
 %attr(755,root,root) %{_libdir}/liblightdm-gobject-0.so.*.*.*
+%attr(755,root,root) %ghost %{_libdir}/liblightdm-gobject-0.so.0
 %attr(755,root,root) %{_libdir}/liblightdm-qt-0.so.*.*.*
+%attr(755,root,root) %ghost %{_libdir}/liblightdm-qt-0.so.0
 %dir %{_datadir}/%{name}
 %dir %{_datadir}/%{name}/themes
 %{_libdir}/girepository-1.0/LightDM-0.typelib
 %{_mandir}/man1/lightdm*
 /etc/dbus-1/system.d/org.lightdm.LightDisplayManager.conf
-# missing config no replace?
-%{_sysconfdir}/%{name}.conf
+%config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/%{name}.conf
+%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) /etc/pam.d/lightdm
+%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) /etc/security/blacklist.lightdm
+%attr(750,root,root) /var/log/lightdm
 
 %files themes-core
 %defattr(644,root,root,755)
 %{_datadir}/%{name}/themes/gnome
-%{_libdir}/ldm-gtk-greeter
+%attr(755,root,root) %{_libdir}/ldm-gtk-greeter
 %{_datadir}/%{name}/themes/webkit
-%{_libdir}/ldm-webkit-greeter
+%attr(755,root,root) %{_libdir}/ldm-webkit-greeter
 
 %files static
 %defattr(644,root,root,755)
@@ -140,12 +155,15 @@ rm -rf $RPM_BUILD_ROOT
 %files devel
 %defattr(644,root,root,755)
 %{_libdir}/liblightdm-gobject-0.la
+%attr(755,root,root) %{_libdir}/liblightdm-gobject-0.so
 %{_libdir}/liblightdm-qt-0.la
+%attr(755,root,root) %{_libdir}/liblightdm-qt-0.so
 %{_includedir}/lightdm-gobject-0
 %{_includedir}/lightdm-qt-0
 %{_pkgconfigdir}/liblightdm-gobject-0.pc
 %{_pkgconfigdir}/liblightdm-qt-0.pc
 %{_datadir}/gir-1.0/LightDM-0.gir
+%{_datadir}/vala/vapi/LightDM-0.vapi
 
 %files apidocs
 %defattr(644,root,root,755)
