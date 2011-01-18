@@ -1,12 +1,12 @@
 Summary:	A lightweight display manager
 Summary(hu.UTF-8):	Egy könnyűsúlyú bejelentkezéskezelő
 Name:		lightdm
-Version:	0.2.2
-Release:	0.2
+Version:	0.2.3
+Release:	0.1
 License:	GPL v3
 Group:		X11/Applications
-Source0:	http://launchpad.net/lightdm/trunk/%{version}/+download/%{name}-%{version}.tar.gz
-# Source0-md5:	143cd786a28e93ed2728b0b4afe7068d
+Source0:	http://people.ubuntu.com/~robert-ancell/lightdm/releases/%{name}-%{version}.tar.gz
+# Source0-md5:	1d9807a598324f67c4f460adbe307a82
 Source1:	%{name}.pamd
 URL:		https://launchpad.net/lightdm
 BuildRequires:	QtDBus-devel
@@ -87,6 +87,7 @@ Upstart támogatás lightdm-hez.
 %setup -q
 
 %build
+install -d m4
 %{__gtkdocize}
 %{__libtoolize}
 %{__intltoolize}
