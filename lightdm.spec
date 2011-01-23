@@ -9,16 +9,25 @@ Source0:	http://people.ubuntu.com/~robert-ancell/lightdm/releases/%{name}-%{vers
 # Source0-md5:	1d9807a598324f67c4f460adbe307a82
 Source1:	%{name}.pamd
 URL:		https://launchpad.net/lightdm
+BuildRequires:	QtCore-devel
 BuildRequires:	QtDBus-devel
+BuildRequires:	QtGui-devel
+BuildRequires:	QtNetwork-devel
+BuildRequires:	autoconf
 BuildRequires:	dbus-glib-devel
+BuildRequires:	docbook-dtd412-xml
 BuildRequires:	gettext-devel
+BuildRequires:	gnome-common
 BuildRequires:	gnome-doc-utils
+BuildRequires:	gtk-doc
 BuildRequires:	gtk-webkit-devel
 BuildRequires:	intltool
+BuildRequires:	libtool
 BuildRequires:	libxklavier-devel
 BuildRequires:	pam-devel
 BuildRequires:	perl-XML-Parser
 BuildRequires:	perl-base
+BuildRequires:	pkgconfig
 BuildRequires:	vala
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
