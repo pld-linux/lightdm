@@ -1,12 +1,12 @@
 Summary:	A lightweight display manager
 Summary(hu.UTF-8):	Egy könnyűsúlyú bejelentkezéskezelő
 Name:		lightdm
-Version:	0.2.3
+Version:	0.3.3
 Release:	0.1
 License:	GPL v3
 Group:		X11/Applications
 Source0:	http://people.ubuntu.com/~robert-ancell/lightdm/releases/%{name}-%{version}.tar.gz
-# Source0-md5:	1d9807a598324f67c4f460adbe307a82
+# Source0-md5:	13f33b7693e58ba99f47ff5e7f7cbfb2
 Source1:	%{name}.pamd
 URL:		https://launchpad.net/lightdm
 BuildRequires:	QtCore-devel
@@ -152,10 +152,16 @@ rm -rf $RPM_BUILD_ROOT
 
 %files themes-core
 %defattr(644,root,root,755)
-%{_datadir}/%{name}/themes/gnome
-%attr(755,root,root) %{_libdir}/ldm-gtk-greeter
-%{_datadir}/%{name}/themes/webkit
-%attr(755,root,root) %{_libdir}/ldm-webkit-greeter
+%{_datadir}/%{name}/themes/example-gtk-gnome
+%{_datadir}/%{name}/themes/example-python-gtk-gnome
+%{_datadir}/%{name}/themes/example-qt-kde
+%{_datadir}/%{name}/themes/example-vala-gtk-gnome
+%attr(755,root,root) %{_libdir}/lightdm-example-gtk-greeter
+%attr(755,root,root) %{_libdir}/lightdm-example-python-gtk-greeter
+%attr(755,root,root) %{_libdir}/lightdm-example-qt-greeter
+%attr(755,root,root) %{_libdir}/lightdm-example-vala-gtk-greeter
+%{_datadir}/lightdm-example-gtk-greeter/greeter.ui
+# %attr(755,root,root) %{_libdir}/ldm-webkit-greeter
 
 %files static
 %defattr(644,root,root,755)
@@ -173,7 +179,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_pkgconfigdir}/liblightdm-gobject-0.pc
 %{_pkgconfigdir}/liblightdm-qt-0.pc
 %{_datadir}/gir-1.0/LightDM-0.gir
-%{_datadir}/vala/vapi/LightDM-0.vapi
+%{_datadir}/vala/vapi/liblightdm-gobject-0.vapi
 
 %files apidocs
 %defattr(644,root,root,755)
