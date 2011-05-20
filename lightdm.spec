@@ -1,12 +1,12 @@
 Summary:	A lightweight display manager
 Summary(hu.UTF-8):	Egy könnyűsúlyú bejelentkezéskezelő
 Name:		lightdm
-Version:	0.3.3
+Version:	0.3.4
 Release:	0.1
 License:	GPL v3
 Group:		X11/Applications
 Source0:	http://people.ubuntu.com/~robert-ancell/lightdm/releases/%{name}-%{version}.tar.gz
-# Source0-md5:	13f33b7693e58ba99f47ff5e7f7cbfb2
+# Source0-md5:	a1d8ed6bfc82fb0e4dcce64cd83a91cc
 Source1:	%{name}.pamd
 URL:		https://launchpad.net/lightdm
 BuildRequires:	QtCore-devel
