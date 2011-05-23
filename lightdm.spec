@@ -160,7 +160,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_libdir}/lightdm-example-python-gtk-greeter
 %attr(755,root,root) %{_libdir}/lightdm-example-qt-greeter
 %attr(755,root,root) %{_libdir}/lightdm-example-vala-gtk-greeter
-%{_datadir}/lightdm-example-gtk-greeter/greeter.ui
+%{_datadir}/lightdm-example-gtk-greeter
 # %attr(755,root,root) %{_libdir}/ldm-webkit-greeter
 
 %files static
