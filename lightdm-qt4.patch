@@ -1,0 +1,43 @@
+diff -ur lightdm-0.9.2.orig/greeters/qt/Makefile.am lightdm-0.9.2/greeters/qt/Makefile.am
+--- lightdm-0.9.2.orig/greeters/qt/Makefile.am	2011-07-30 16:23:39.348551378 +0200
++++ lightdm-0.9.2/greeters/qt/Makefile.am	2011-07-30 16:23:58.538579498 +0200
+@@ -4,16 +4,16 @@
+ dist_xgreeters_DATA = lightdm-qt-greeter.desktop
+ 
+ greeter_moc.cpp: greeter.h
+-	moc $< -o $@
++	moc-qt4 $< -o $@
+ loginprompt_moc.cpp: loginprompt.h
+-	moc $< -o $@
++	moc-qt4 $< -o $@
+ panel_moc.cpp: panel.h
+-	moc $< -o $@
++	moc-qt4 $< -o $@
+ 
+ ui_loginprompt.h: loginprompt.ui
+-	uic $< -o $@
++	uic-qt4 $< -o $@
+ ui_panel.h: panel.ui
+-	uic $< -o $@
++	uic-qt4 $< -o $@
+ 
+ loginprompt.cpp: ui_loginprompt.h
+ panel.cpp: ui_panel.h
+diff -ur lightdm-0.9.2.orig/configure.ac lightdm-0.9.2/configure.ac
+--- lightdm-0.9.2.orig/configure.ac	2011-07-30 16:37:56.659808760 +0200
++++ lightdm-0.9.2/configure.ac	2011-07-30 16:39:37.379956466 +0200
+@@ -87,12 +87,14 @@
+     PKG_CHECK_MODULES(LIBLIGHTDM_QT, [
+         QtCore
+         QtDBus
++	QtGui
+         QtNetwork
+     ], compile_liblightdm_qt=yes, compile_liblightdm_qt=no)
+ elif test x"$enable_liblightdm_qt" = "xyes"; then
+     PKG_CHECK_MODULES(LIBLIGHTDM_QT, [
+         QtCore
+         QtDBus
++	QtGui
+         QtNetwork
+     ])
+     compile_liblightdm_qt=yes

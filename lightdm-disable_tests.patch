@@ -1,0 +1,12 @@
+diff -ur lightdm-0.9.2.orig/Makefile.am lightdm-0.9.2/Makefile.am
+--- lightdm-0.9.2.orig/Makefile.am	2011-07-30 16:29:38.299077463 +0200
++++ lightdm-0.9.2/Makefile.am	2011-07-30 16:30:55.339190789 +0200
+@@ -5,7 +5,7 @@
+ if COMPILE_LIBLIGHTDM_QT
+ SUBDIRS += liblightdm-qt
+ endif
+-SUBDIRS += data greeters po src doc tests
++SUBDIRS += data greeters po src doc
+ 
+ DISTCHECK_CONFIGURE_FLAGS = --enable-introspection --enable-gtk-doc
+ 
