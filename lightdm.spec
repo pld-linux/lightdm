@@ -1,13 +1,16 @@
+#
 Summary:	A lightweight display manager
 Summary(hu.UTF-8):	Egy könnyűsúlyú bejelentkezéskezelő
 Name:		lightdm
-Version:	0.3.4
+Version:	0.9.2
 Release:	0.1
 License:	GPL v3
 Group:		X11/Applications
 Source0:	http://people.ubuntu.com/~robert-ancell/lightdm/releases/%{name}-%{version}.tar.gz
-# Source0-md5:	a1d8ed6bfc82fb0e4dcce64cd83a91cc
+# Source0-md5:	7f5a38ab69f1f96a7ad5c17c3a5599fd
 Source1:	%{name}.pamd
+Patch0:		%{name}-qt4.patch
+Patch1:		%{name}-disable_tests.patch
 URL:		https://launchpad.net/lightdm
 BuildRequires:	QtCore-devel
 BuildRequires:	QtDBus-devel
@@ -29,9 +32,10 @@ BuildRequires:	perl-XML-Parser
 BuildRequires:	perl-base
 BuildRequires:	pkgconfig
 BuildRequires:	vala
+Requires:	lightdm-greeter
+Provides:	group(xdm)
+Provides:	user(xdm)
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
-
-%define         skip_post_check_so	liblightdm-qt-0.so.0.0.0
 
 %description
 An X display manager that:
@@ -49,16 +53,23 @@ Egy X bejelentkezéskezelő, amely:
  - teljesen témázható (a legkönnyebb a webkit felülettel)
  - desktop-független (üdvözlők bármilyen eszközkészlettel írhatók)
 
-%package themes-core
-Summary:	Core themes for lightdm
-Summary(hu.UTF-8):	Alap témák a lightdm-hez
+%package greeter-gtk
+Summary:	GTK greeter for lightdm
 Group:		Themes
+Provides:	lightdm-greeter
+Requires:       %{name} = %{epoch}:%{version}-%{release}
 
-%description themes-core
-Core themes for lightdm.
+%description greeter-gtk
+GTK greeter for lightdm.
 
-%description themes-core -l hu.UTF-8
-Alap témák a lightdm-hez.
+%package greeter-qt
+Summary:	QT greeter for lightdm
+Group:		Themes
+Provides:	lightdm-greeter
+Requires:       %{name} = %{epoch}:%{version}-%{release}
+
+%description greeter-qt
+QT greeter for lightdm.
 
 %package static
 Summary:	Static library for lightdm development
@@ -94,6 +105,8 @@ Upstart támogatás lightdm-hez.
 
 %prep
 %setup -q
+%patch0 -p1
+%patch1 -p1
 
 %build
 install -d m4
@@ -105,8 +118,10 @@ install -d m4
 %{__autoheader}
 %{__automake}
 %configure \
+	--disable-silent-rules \
+	--enable-liblightdm-qt \
 	--enable-gtk-doc \
-	--with-theme-dir=%{_datadir}/%{name}/themes
+	--with-greeter-user=xdm
 %{__make}
 
 %install
@@ -116,12 +131,23 @@ rm -rf $RPM_BUILD_ROOT
 	DESTDIR=$RPM_BUILD_ROOT
 
 install -d $RPM_BUILD_ROOT/etc/{pam.d,security} \
-	$RPM_BUILD_ROOT/var/log/lightdm
+	$RPM_BUILD_ROOT/home/services/xdm \
+	$RPM_BUILD_ROOT/var/log/lightdm $RPM_BUILD_ROOT%{_sysconfdir}/init/ \
+	$RPM_BUILD_ROOT%{_sysconfdir}/dbus-1/system.d
 install %{SOURCE1} $RPM_BUILD_ROOT/etc/pam.d/lightdm
 touch $RPM_BUILD_ROOT/etc/security/blacklist.lightdm
+install data/init/%{name}.conf $RPM_BUILD_ROOT%{_sysconfdir}/init
+
+%{__rm} -r $RPM_BUILD_ROOT%{_localedir}/{lb,wae}
+
+%find_lang %{name}
 
 %clean
 rm -rf $RPM_BUILD_ROOT
+
+%pre
+%groupadd -g 55 -r -f xdm
+%useradd -u 55 -r -d /home/services/xdm -s /bin/false -c "X Display Manager" -g xdm xdm
 
 %post	-p /sbin/ldconfig
 %postun	-p /sbin/ldconfig
@@ -132,58 +158,65 @@ rm -rf $RPM_BUILD_ROOT
 %postun upstart
 %upstart_postun lightdm
 
-%files
+if [ "$1" = "0" ]; then
+        %userremove xdm
+        %groupremove xdm
+fi
+
+%files -f %{name}.lang
 %defattr(644,root,root,755)
 %doc AUTHORS ChangeLog NEWS README
-%attr(755,root,root) %{_bindir}/*
-%attr(755,root,root) %{_libdir}/liblightdm-gobject-0.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/liblightdm-gobject-0.so.0
-%attr(755,root,root) %{_libdir}/liblightdm-qt-0.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/liblightdm-qt-0.so.0
-%dir %{_datadir}/%{name}
-%dir %{_datadir}/%{name}/themes
-%{_libdir}/girepository-1.0/LightDM-0.typelib
+%attr(755,root,root) %{_sbindir}/lightdm
+%attr(755,root,root) %{_libdir}/liblightdm-gobject-1.so.*.*.*
+%attr(755,root,root) %ghost %{_libdir}/liblightdm-gobject-1.so.0
+%attr(755,root,root) %{_libdir}/liblightdm-qt-1.so.*.*.*
+%attr(755,root,root) %ghost %{_libdir}/liblightdm-qt-1.so.0
+%{_libdir}/girepository-1.0/LightDM-1.typelib
 %{_mandir}/man1/lightdm*
-/etc/dbus-1/system.d/org.lightdm.LightDisplayManager.conf
-%config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/%{name}.conf
+/etc/dbus-1/system.d/org.freedesktop.DisplayManager.conf
+%dir %{_datadir}/xgreeters
+%dir %{_sysconfdir}/%{name}
+%config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/%{name}/%{name}.conf
+%config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/%{name}/keys.conf
+%config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/%{name}/users.conf
 %attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) /etc/pam.d/lightdm
 %attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) /etc/security/blacklist.lightdm
-%attr(750,root,root) /var/log/lightdm
+%attr(750,root,xdm) /var/log/lightdm
+%attr(750,xdm,xdm) /home/services/xdm
 
-%files themes-core
+%files greeter-gtk
 %defattr(644,root,root,755)
-%{_datadir}/%{name}/themes/example-gtk-gnome
-%{_datadir}/%{name}/themes/example-python-gtk-gnome
-%{_datadir}/%{name}/themes/example-qt-kde
-%{_datadir}/%{name}/themes/example-vala-gtk-gnome
-%attr(755,root,root) %{_libdir}/lightdm-example-gtk-greeter
-%attr(755,root,root) %{_libdir}/lightdm-example-python-gtk-greeter
-%attr(755,root,root) %{_libdir}/lightdm-example-qt-greeter
-%attr(755,root,root) %{_libdir}/lightdm-example-vala-gtk-greeter
-%{_datadir}/lightdm-example-gtk-greeter
-# %attr(755,root,root) %{_libdir}/ldm-webkit-greeter
+%attr(755,root,root) %{_sbindir}/lightdm-gtk-greeter
+%{_datadir}/lightdm-gtk-greeter
+%{_datadir}/xgreeters/lightdm-gtk-greeter.desktop
+%config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/%{name}/%{name}-gtk-greeter.conf
+
+%files greeter-qt
+%defattr(644,root,root,755)
+%attr(755,root,root) %{_sbindir}/lightdm-qt-greeter
+%{_datadir}/xgreeters/lightdm-qt-greeter.desktop
 
 %files static
 %defattr(644,root,root,755)
-%{_libdir}/liblightdm-gobject-0.a
-%{_libdir}/liblightdm-qt-0.a
+%{_libdir}/liblightdm-gobject-1.a
+%{_libdir}/liblightdm-qt-1.a
 
 %files devel
 %defattr(644,root,root,755)
-%{_libdir}/liblightdm-gobject-0.la
-%attr(755,root,root) %{_libdir}/liblightdm-gobject-0.so
-%{_libdir}/liblightdm-qt-0.la
-%attr(755,root,root) %{_libdir}/liblightdm-qt-0.so
-%{_includedir}/lightdm-gobject-0
-%{_includedir}/lightdm-qt-0
-%{_pkgconfigdir}/liblightdm-gobject-0.pc
-%{_pkgconfigdir}/liblightdm-qt-0.pc
-%{_datadir}/gir-1.0/LightDM-0.gir
-%{_datadir}/vala/vapi/liblightdm-gobject-0.vapi
+%{_libdir}/liblightdm-gobject-1.la
+%attr(755,root,root) %{_libdir}/liblightdm-gobject-1.so
+%{_libdir}/liblightdm-qt-1.la
+%attr(755,root,root) %{_libdir}/liblightdm-qt-1.so
+%{_includedir}/lightdm-gobject-1
+%{_includedir}/lightdm-qt-1
+%{_pkgconfigdir}/liblightdm-gobject-1.pc
+%{_pkgconfigdir}/liblightdm-qt-1.pc
+%{_datadir}/gir-1.0/LightDM-1.gir
+%{_datadir}/vala/vapi/liblightdm-gobject-1.vapi
 
 %files apidocs
 %defattr(644,root,root,755)
-%{_datadir}/gtk-doc/html/lightdm-gobject-0
+%{_datadir}/gtk-doc/html/lightdm-gobject-1
 
 %files upstart
 %defattr(644,root,root,755)
