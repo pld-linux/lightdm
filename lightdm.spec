@@ -56,8 +56,8 @@ Egy X bejelentkezéskezelő, amely:
 %package greeter-gtk
 Summary:	GTK greeter for lightdm
 Group:		Themes
+Requires:	%{name} = %{epoch}:%{version}-%{release}
 Provides:	lightdm-greeter
-Requires:       %{name} = %{epoch}:%{version}-%{release}
 
 %description greeter-gtk
 GTK greeter for lightdm.
@@ -65,8 +65,8 @@ GTK greeter for lightdm.
 %package greeter-qt
 Summary:	QT greeter for lightdm
 Group:		Themes
+Requires:	%{name} = %{epoch}:%{version}-%{release}
 Provides:	lightdm-greeter
-Requires:       %{name} = %{epoch}:%{version}-%{release}
 
 %description greeter-qt
 QT greeter for lightdm.
@@ -126,17 +126,15 @@ install -d m4
 
 %install
 rm -rf $RPM_BUILD_ROOT
-
 %{__make} install \
 	DESTDIR=$RPM_BUILD_ROOT
 
-install -d $RPM_BUILD_ROOT/etc/{pam.d,security} \
+install -d $RPM_BUILD_ROOT/etc/{pam.d,security,init,dbus-1/system.d} \
 	$RPM_BUILD_ROOT/home/services/xdm \
-	$RPM_BUILD_ROOT/var/log/lightdm $RPM_BUILD_ROOT%{_sysconfdir}/init/ \
-	$RPM_BUILD_ROOT%{_sysconfdir}/dbus-1/system.d
-install %{SOURCE1} $RPM_BUILD_ROOT/etc/pam.d/lightdm
+	$RPM_BUILD_ROOT/var/log/lightdm
+cp -p %{SOURCE1} $RPM_BUILD_ROOT/etc/pam.d/lightdm
 touch $RPM_BUILD_ROOT/etc/security/blacklist.lightdm
-install data/init/%{name}.conf $RPM_BUILD_ROOT%{_sysconfdir}/init
+cp -p data/init/%{name}.conf $RPM_BUILD_ROOT/etc/init
 
 %{__rm} -r $RPM_BUILD_ROOT%{_localedir}/{lb,wae}
 
@@ -159,8 +157,8 @@ rm -rf $RPM_BUILD_ROOT
 %upstart_postun lightdm
 
 if [ "$1" = "0" ]; then
-        %userremove xdm
-        %groupremove xdm
+	%userremove xdm
+	%groupremove xdm
 fi
 
 %files -f %{name}.lang
@@ -220,5 +218,4 @@ fi
 
 %files upstart
 %defattr(644,root,root,755)
-# missing config noreplace?
-%{_sysconfdir}/init/%{name}.conf
+%config(noreplace) %verify(not md5 mtime size) /etc/init/%{name}.conf
