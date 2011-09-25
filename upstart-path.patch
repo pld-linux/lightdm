@@ -1,0 +1,8 @@
+--- lightdm-0.9.8/data/init/lightdm.conf~	2011-09-01 10:10:32.000000000 +0300
++++ lightdm-0.9.8/data/init/lightdm.conf	2011-09-25 20:52:03.004262124 +0300
+@@ -9,4 +9,4 @@
+ emits login-session-start
+ emits desktop-session-start
+ 
+-exec /usr/bin/lightdm
++exec /usr/sbin/lightdm

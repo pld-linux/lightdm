@@ -10,6 +10,7 @@ Source0:	http://people.ubuntu.com/~robert-ancell/lightdm/releases/%{name}-%{vers
 Source1:	%{name}.pamd
 Patch0:		%{name}-qt4.patch
 Patch1:		%{name}-disable_tests.patch
+Patch2:		upstart-path.patch
 URL:		http://www.freedesktop.org/wiki/Software/LightDM
 BuildRequires:	QtCore-devel
 BuildRequires:	QtDBus-devel
@@ -106,6 +107,7 @@ Upstart támogatás lightdm-hez.
 %setup -q
 %patch0 -p1
 %patch1 -p1
+%patch2 -p1
 
 %build
 install -d m4
