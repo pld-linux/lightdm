@@ -1,13 +1,12 @@
-#
 Summary:	A lightweight display manager
 Summary(hu.UTF-8):	Egy könnyűsúlyú bejelentkezéskezelő
 Name:		lightdm
-Version:	0.9.2
-Release:	0.1
+Version:	0.9.8
+Release:	1
 License:	GPL v3
 Group:		X11/Applications
 Source0:	http://people.ubuntu.com/~robert-ancell/lightdm/releases/%{name}-%{version}.tar.gz
-# Source0-md5:	7f5a38ab69f1f96a7ad5c17c3a5599fd
+# Source0-md5:	4ca45e83e317b27ea14fe85e05eef0d3
 Source1:	%{name}.pamd
 Patch0:		%{name}-qt4.patch
 Patch1:		%{name}-disable_tests.patch
@@ -164,21 +163,25 @@ fi
 %files -f %{name}.lang
 %defattr(644,root,root,755)
 %doc AUTHORS ChangeLog NEWS README
-%attr(755,root,root) %{_sbindir}/lightdm
-%attr(755,root,root) %{_libdir}/liblightdm-gobject-1.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/liblightdm-gobject-1.so.0
-%attr(755,root,root) %{_libdir}/liblightdm-qt-1.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/liblightdm-qt-1.so.0
-%{_libdir}/girepository-1.0/LightDM-1.typelib
-%{_mandir}/man1/lightdm*
-/etc/dbus-1/system.d/org.freedesktop.DisplayManager.conf
-%dir %{_datadir}/xgreeters
 %dir %{_sysconfdir}/%{name}
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/%{name}/%{name}.conf
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/%{name}/keys.conf
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/%{name}/users.conf
 %attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) /etc/pam.d/lightdm
 %attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) /etc/security/blacklist.lightdm
+/etc/dbus-1/system.d/org.freedesktop.DisplayManager.conf
+%attr(755,root,root) %{_bindir}/dm-tool
+%attr(755,root,root) %{_sbindir}/lightdm
+%attr(755,root,root) %{_libdir}/liblightdm-gobject-1.so.*.*.*
+%attr(755,root,root) %ghost %{_libdir}/liblightdm-gobject-1.so.0
+%attr(755,root,root) %{_libdir}/liblightdm-qt-1.so.*.*.*
+%attr(755,root,root) %ghost %{_libdir}/liblightdm-qt-1.so.0
+%attr(755,root,root) %{_libdir}/lightdm-set-defaults
+%dir %{_libdir}/%{name}
+%attr(755,root,root) %{_libdir}/%{name}/gdmflexiserver
+%{_libdir}/girepository-1.0/LightDM-1.typelib
+%dir %{_datadir}/xgreeters
+%{_mandir}/man1/lightdm*
 %attr(750,root,xdm) /var/log/lightdm
 %attr(750,xdm,xdm) /home/services/xdm
 
