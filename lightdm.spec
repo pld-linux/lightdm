@@ -10,7 +10,7 @@ Source0:	http://people.ubuntu.com/~robert-ancell/lightdm/releases/%{name}-%{vers
 Source1:	%{name}.pamd
 Patch0:		%{name}-qt4.patch
 Patch1:		%{name}-disable_tests.patch
-URL:		https://launchpad.net/lightdm
+URL:		http://www.freedesktop.org/wiki/Software/LightDM
 BuildRequires:	QtCore-devel
 BuildRequires:	QtDBus-devel
 BuildRequires:	QtGui-devel
