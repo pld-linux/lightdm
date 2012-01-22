@@ -95,6 +95,8 @@ lightdm API documentation.
 Summary:	Upstart job for lightdm
 Summary(hu.UTF-8):	Upstart támogatás lightdm-hez
 Group:		Daemons
+Requires:	%{name} = %{epoch}:%{version}-%{release}
+Requires:	upstart >= 0.6
 
 %description upstart
 Upstart job for lightdm.
