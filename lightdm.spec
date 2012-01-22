@@ -1,14 +1,13 @@
 Summary:	A lightweight display manager
 Summary(hu.UTF-8):	Egy könnyűsúlyú bejelentkezéskezelő
 Name:		lightdm
-Version:	1.0.0
+Version:	1.1.0
 Release:	1
 License:	GPL v3
 Group:		X11/Applications
 Source0:	http://people.ubuntu.com/~robert-ancell/lightdm/releases/%{name}-%{version}.tar.gz
-# Source0-md5:	3742c7ed22bbd7fdaaffcad07f311db8
+# Source0-md5:	c2347200b1af29c677ef5ad83855217b
 Source1:	%{name}.pamd
-Patch0:		%{name}-qt4.patch
 Patch1:		%{name}-disable_tests.patch
 Patch2:		upstart-path.patch
 URL:		http://www.freedesktop.org/wiki/Software/LightDM
@@ -105,7 +104,6 @@ Upstart támogatás lightdm-hez.
 
 %prep
 %setup -q
-%patch0 -p1
 %patch1 -p1
 %patch2 -p1
 
