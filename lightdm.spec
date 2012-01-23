@@ -2,7 +2,7 @@ Summary:	A lightweight display manager
 Summary(hu.UTF-8):	Egy könnyűsúlyú bejelentkezéskezelő
 Name:		lightdm
 Version:	1.1.1
-Release:	1
+Release:	2
 License:	GPL v3
 Group:		X11/Applications
 Source0:	https://launchpad.net/lightdm/trunk/%{version}/+download/%{name}-%{version}.tar.gz
@@ -60,6 +60,14 @@ Egy X bejelentkezéskezelő, amely:
  - teljesen témázható (a legkönnyebb a webkit felülettel)
  - desktop-független (üdvözlők bármilyen eszközkészlettel írhatók)
 
+%package libs
+Summary:	lightdm libraries
+Group:		Libraries
+Conflicts:	lightdm < 1.1.1-2
+
+%description libs
+lightdm libraries.
+
 %package static
 Summary:	Static library for lightdm development
 Group:		Development/Libraries
@@ -70,7 +78,7 @@ Static library for lightdm development.
 %package devel
 Summary:	Header files for lightdm development
 Group:		Development/Libraries
-Requires:	%{name} = %{version}-%{release}
+Requires:	%{name}-libs = %{version}-%{release}
 
 %description devel
 Header files for lightdm development.
@@ -141,8 +149,8 @@ rm -rf $RPM_BUILD_ROOT
 %groupadd -g 55 -r -f xdm
 %useradd -u 55 -r -d /home/services/xdm -s /bin/false -c "X Display Manager" -g xdm xdm
 
-%post	-p /sbin/ldconfig
-%postun	-p /sbin/ldconfig
+%post	libs -p /sbin/ldconfig
+%postun	libs -p /sbin/ldconfig
 
 %post upstart
 %upstart_post lightdm
@@ -170,10 +178,6 @@ fi
 /etc/dbus-1/system.d/org.freedesktop.DisplayManager.conf
 %attr(755,root,root) %{_bindir}/dm-tool
 %attr(755,root,root) %{_sbindir}/lightdm
-%attr(755,root,root) %{_libdir}/liblightdm-gobject-1.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/liblightdm-gobject-1.so.0
-%attr(755,root,root) %{_libdir}/liblightdm-qt-2.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/liblightdm-qt-2.so.0
 %dir %{_libdir}/%{name}
 %attr(755,root,root) %{_libdir}/%{name}/gdmflexiserver
 %attr(755,root,root) %{_libdir}/%{name}/lightdm-guest-session-wrapper
@@ -183,6 +187,13 @@ fi
 %{_mandir}/man1/lightdm*
 %attr(750,root,xdm) /var/log/lightdm
 %attr(750,xdm,xdm) /home/services/xdm
+
+%files libs
+%defattr(644,root,root,755)
+%attr(755,root,root) %{_libdir}/liblightdm-gobject-1.so.*.*.*
+%attr(755,root,root) %ghost %{_libdir}/liblightdm-gobject-1.so.0
+%attr(755,root,root) %{_libdir}/liblightdm-qt-2.so.*.*.*
+%attr(755,root,root) %ghost %{_libdir}/liblightdm-qt-2.so.0
 
 %files static
 %defattr(644,root,root,755)
