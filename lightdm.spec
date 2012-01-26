@@ -2,7 +2,7 @@ Summary:	A lightweight display manager
 Summary(hu.UTF-8):	Egy könnyűsúlyú bejelentkezéskezelő
 Name:		lightdm
 Version:	1.1.1
-Release:	3
+Release:	4
 License:	GPL v3
 Group:		X11/Applications
 Source0:	https://launchpad.net/lightdm/trunk/%{version}/+download/%{name}-%{version}.tar.gz
@@ -120,6 +120,7 @@ install -d m4
 	--disable-silent-rules \
 	--disable-tests \
 	--enable-liblightdm-qt \
+	--with-html-dir=%{_gtkdocdir} \
 	--enable-gtk-doc \
 	--with-greeter-session=lightdm-gtk-greeter \
 	--with-greeter-user=xdm
@@ -216,7 +217,7 @@ fi
 
 %files apidocs
 %defattr(644,root,root,755)
-%{_datadir}/gtk-doc/html/lightdm-gobject-1
+%{_gtkdocdir}/lightdm-gobject-1
 
 %files upstart
 %defattr(644,root,root,755)
