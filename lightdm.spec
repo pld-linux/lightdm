@@ -2,7 +2,7 @@ Summary:	A lightweight display manager
 Summary(hu.UTF-8):	Egy könnyűsúlyú bejelentkezéskezelő
 Name:		lightdm
 Version:	1.1.4
-Release:	1
+Release:	2
 License:	GPL v3
 Group:		X11/Applications
 Source0:	https://launchpad.net/lightdm/trunk/%{version}/+download/%{name}-%{version}.tar.gz
@@ -33,6 +33,7 @@ BuildRequires:	pkgconfig
 BuildRequires:	rpmbuild(macros) >= 1.583
 BuildRequires:	vala
 Requires:	lightdm-greeter
+Provides:	XDM
 Provides:	group(xdm)
 Provides:	user(xdm)
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
