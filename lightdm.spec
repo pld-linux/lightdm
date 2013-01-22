@@ -1,12 +1,12 @@
 Summary:	A lightweight display manager
 Summary(hu.UTF-8):	Egy könnyűsúlyú bejelentkezéskezelő
 Name:		lightdm
-Version:	1.1.4
-Release:	2
+Version:	1.4.0
+Release:	1
 License:	GPL v3
 Group:		X11/Applications
-Source0:	https://launchpad.net/lightdm/trunk/%{version}/+download/%{name}-%{version}.tar.gz
-# Source0-md5:	1834ad416b338cf16edfbb9c5cde9afa
+Source0:	https://launchpad.net/lightdm/1.4/%{version}/+download/%{name}-%{version}.tar.gz
+# Source0-md5:	622d9087ec773dd0626a250a5868f88c
 Source1:	%{name}.pamd
 Patch2:		upstart-path.patch
 URL:		http://www.freedesktop.org/wiki/Software/LightDM
@@ -31,6 +31,8 @@ BuildRequires:	perl-XML-Parser
 BuildRequires:	perl-base
 BuildRequires:	pkgconfig
 BuildRequires:	rpmbuild(macros) >= 1.583
+BuildRequires:	yelp-tools
+BuildRequires:	itstool
 BuildRequires:	vala
 Requires:	lightdm-greeter
 Provides:	XDM
@@ -174,6 +176,8 @@ fi
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/%{name}/keys.conf
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/%{name}/users.conf
 %attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) /etc/pam.d/lightdm
+%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) /etc/pam.d/lightdm-autologin
+%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) /etc/pam.d/lightdm-greeter
 %attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) /etc/security/blacklist.lightdm
 # XXX: move /etc/apparmor.d to filesystem package or make apparmor subpackage here
 %dir /etc/apparmor.d
