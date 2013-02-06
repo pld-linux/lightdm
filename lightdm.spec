@@ -1,16 +1,18 @@
 Summary:	A lightweight display manager
 Summary(hu.UTF-8):	Egy könnyűsúlyú bejelentkezéskezelő
 Name:		lightdm
-Version:	1.4.0
+Version:	1.5.0
 Release:	1
-License:	GPL v3
+License:	LGPL v2, LGPL v3
 Group:		X11/Applications
-Source0:	https://launchpad.net/lightdm/1.4/%{version}/+download/%{name}-%{version}.tar.gz
-# Source0-md5:	622d9087ec773dd0626a250a5868f88c
+Source0:	https://launchpad.net/lightdm/1.6/%{version}/+download/%{name}-%{version}.tar.xz
+# Source0-md5:	e063b73aef31563b4e463a5bbb31b0fc
 Source1:	%{name}.pamd
 Patch2:		upstart-path.patch
 URL:		http://www.freedesktop.org/wiki/Software/LightDM
 BuildRequires:	QtCore-devel
+BuildRequires:	tar >= 1:1.22
+BuildRequires:	xz
 BuildRequires:	QtDBus-devel
 BuildRequires:	QtGui-devel
 BuildRequires:	QtNetwork-devel
@@ -111,10 +113,8 @@ Upstart támogatás lightdm-hez.
 %patch2 -p1
 
 %build
-install -d m4
-%{__gtkdocize}
 %{__libtoolize}
-%{__intltoolize}
+%{__gtkdocize}
 %{__aclocal}
 %{__autoconf}
 %{__autoheader}
@@ -145,7 +145,7 @@ cp -p data/init/%{name}.conf $RPM_BUILD_ROOT/etc/init
 
 %{__rm} -r $RPM_BUILD_ROOT%{_localedir}/{lb,wae}
 
-%find_lang %{name}
+%find_lang %{name} --with-gnome
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -170,7 +170,7 @@ fi
 
 %files -f %{name}.lang
 %defattr(644,root,root,755)
-%doc AUTHORS ChangeLog NEWS README TODO
+%doc NEWS TODO
 %dir %{_sysconfdir}/%{name}
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/%{name}/%{name}.conf
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/%{name}/keys.conf
