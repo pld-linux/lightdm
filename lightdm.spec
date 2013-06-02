@@ -2,7 +2,7 @@ Summary:	A lightweight display manager
 Summary(hu.UTF-8):	Egy könnyűsúlyú bejelentkezéskezelő
 Name:		lightdm
 Version:	1.7.0
-Release:	0.2
+Release:	0.7
 # library/bindings are LGPLv2 or LGPLv3, the rest GPLv3+
 License:	(LGPLv2 or LGPLv3) and GPLv3+
 Group:		X11/Applications
@@ -61,28 +61,42 @@ Egy X bejelentkezéskezelő, amely:
  - teljesen témázható (a legkönnyebb a webkit felülettel)
  - desktop-független (üdvözlők bármilyen eszközkészlettel írhatók)
 
-%package libs
-Summary:	lightdm libraries
+%package libs-gobject
+Summary:	LightDM GObject client library
 Group:		Libraries
-Conflicts:	lightdm < 1.1.1-2
+Obsoletes:	lightdm-libs < 1.7.0-0.6
 
-%description libs
-lightdm libraries.
+%description libs-gobject
+This package contains a GObject based library for LightDM clients to
+use to interface with LightDM.
 
-%package static
-Summary:	Static library for lightdm development
+%package libs-gobject-devel
+Summary:	Development files for %{name}-gobject
 Group:		Development/Libraries
+Group:		Libraries
+Requires:	%{name}-libs-gobject = %{version}-%{release}
 
-%description static
-Static library for lightdm development.
+%description libs-gobject-devel
+This package contains development files for a GObject based library
+for LightDM clients to use to interface with LightDM.
 
-%package devel
-Summary:	Header files for lightdm development
+%package libs-qt
+Summary:	LightDM Qt client library
+Group:		Libraries
+Conflicts:	lightdm-libs < 1.7.0-0.6
+
+%description libs-qt
+This package contains a Qt based library for LightDM clients to use to
+interface with LightDM.
+
+%package libs-qt-devel
+Summary:	Development files for %{name}-qt
 Group:		Development/Libraries
-Requires:	%{name}-libs = %{version}-%{release}
+Requires:	%{name}-libs-qt = %{version}-%{release}
 
-%description devel
-Header files for lightdm development.
+%description libs-qt-devel
+This package contains development files for a Qt based library for
+LightDM clients to use to interface with LightDM.
 
 %package apidocs
 Summary:	lightdm API documentation
@@ -117,6 +131,7 @@ Upstart támogatás lightdm-hez.
 %{__automake}
 %configure \
 	--disable-silent-rules \
+	--disable-static \
 	--disable-tests \
 	--enable-liblightdm-qt \
 	--with-html-dir=%{_gtkdocdir} \
@@ -154,8 +169,11 @@ rm -rf $RPM_BUILD_ROOT
 %groupadd -g 55 -r -f xdm
 %useradd -u 55 -r -d /home/services/xdm -s /bin/false -c "X Display Manager" -g xdm xdm
 
-%post	libs -p /sbin/ldconfig
-%postun	libs -p /sbin/ldconfig
+%post	libs-gobject -p /sbin/ldconfig
+%postun	libs-gobject -p /sbin/ldconfig
+
+%post	libs-qt -p /sbin/ldconfig
+%postun	libs-qt -p /sbin/ldconfig
 
 %post upstart
 %upstart_post lightdm
@@ -195,23 +213,18 @@ fi
 %dir %attr(710,root,root) /var/log/lightdm
 %dir %attr(750,xdm,xdm) /home/services/xdm
 
-%files libs
+%files libs-gobject
 %defattr(644,root,root,755)
-# -gobject
 %attr(755,root,root) %{_libdir}/liblightdm-gobject-1.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/liblightdm-gobject-1.so.0
-# -qt
+
+%files libs-qt
+%defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/liblightdm-qt-3.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/liblightdm-qt-3.so.0
 
-%files static
+%files libs-gobject-devel
 %defattr(644,root,root,755)
-%{_libdir}/liblightdm-gobject-1.a
-%{_libdir}/liblightdm-qt-3.a
-
-%files devel
-%defattr(644,root,root,755)
-# -gobject
 %{_datadir}/gir-1.0/LightDM-1.gir
 %{_includedir}/lightdm-gobject-1
 %{_pkgconfigdir}/liblightdm-gobject-1.pc
@@ -219,7 +232,9 @@ fi
 %attr(755,root,root) %{_libdir}/liblightdm-gobject-1.so
 # -vala
 %{_datadir}/vala/vapi/liblightdm-gobject-1.vapi
-# -qt
+
+%files libs-qt-devel
+%defattr(644,root,root,755)
 %{_libdir}/liblightdm-qt-3.la
 %attr(755,root,root) %{_libdir}/liblightdm-qt-3.so
 %{_includedir}/lightdm-qt-3
