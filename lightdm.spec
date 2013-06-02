@@ -2,7 +2,7 @@ Summary:	A lightweight display manager
 Summary(hu.UTF-8):	Egy könnyűsúlyú bejelentkezéskezelő
 Name:		lightdm
 Version:	1.7.0
-Release:	0.1
+Release:	0.2
 # library/bindings are LGPLv2 or LGPLv3, the rest GPLv3+
 License:	(LGPLv2 or LGPLv3) and GPLv3+
 Group:		X11/Applications
@@ -133,6 +133,7 @@ rm -rf $RPM_BUILD_ROOT
 install -d $RPM_BUILD_ROOT/etc/{pam.d,security,init,dbus-1/system.d} \
 	$RPM_BUILD_ROOT/home/services/xdm \
 	$RPM_BUILD_ROOT%{_datadir}/xgreeters \
+	$RPM_BUILD_ROOT%{_datadir}/lightdm/remote-sessions \
 	$RPM_BUILD_ROOT/var/{log,cache}/lightdm
 
 cp -p %{SOURCE1} $RPM_BUILD_ROOT/etc/pam.d/lightdm
@@ -187,6 +188,8 @@ fi
 %attr(755,root,root) %{_libdir}/%{name}/lightdm-set-defaults
 %{_libdir}/girepository-1.0/LightDM-1.typelib
 %dir %{_datadir}/xgreeters
+%dir %{_datadir}/%{name}
+%dir %{_datadir}/%{name}/remote-sessions
 %{_mandir}/man1/lightdm*
 %dir %attr(710,root,root) /var/cache/lightdm
 %dir %attr(710,root,root) /var/log/lightdm
