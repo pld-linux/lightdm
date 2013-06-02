@@ -11,8 +11,6 @@ Source1:	%{name}.pamd
 Patch2:		upstart-path.patch
 URL:		http://www.freedesktop.org/wiki/Software/LightDM
 BuildRequires:	QtCore-devel
-BuildRequires:	tar >= 1:1.22
-BuildRequires:	xz
 BuildRequires:	QtDBus-devel
 BuildRequires:	QtGui-devel
 BuildRequires:	QtNetwork-devel
@@ -26,6 +24,7 @@ BuildRequires:	gtk+2-devel >= 2:2.24
 BuildRequires:	gtk-doc
 BuildRequires:	gtk-webkit-devel
 BuildRequires:	intltool
+BuildRequires:	itstool
 BuildRequires:	libtool
 BuildRequires:	libxklavier-devel
 BuildRequires:	pam-devel
@@ -33,9 +32,11 @@ BuildRequires:	perl-XML-Parser
 BuildRequires:	perl-base
 BuildRequires:	pkgconfig
 BuildRequires:	rpmbuild(macros) >= 1.583
-BuildRequires:	yelp-tools
-BuildRequires:	itstool
+BuildRequires:	tar >= 1:1.22
 BuildRequires:	vala
+BuildRequires:	xz
+BuildRequires:	yelp-tools
+Requires:	dbus-x11
 Requires:	lightdm-greeter
 Provides:	XDM
 Provides:	group(xdm)
@@ -143,6 +144,9 @@ cp -p %{SOURCE1} $RPM_BUILD_ROOT/etc/pam.d/lightdm
 touch $RPM_BUILD_ROOT/etc/security/blacklist.lightdm
 cp -p data/init/%{name}.conf $RPM_BUILD_ROOT/etc/init
 
+# We don't ship AppAmor
+rm -rv $RPM_BUILD_ROOT%{_sysconfdir}/apparmor.d
+
 %{__rm} -r $RPM_BUILD_ROOT%{_localedir}/{lb,wae}
 
 %find_lang %{name} --with-gnome
@@ -179,9 +183,6 @@ fi
 %attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) /etc/pam.d/lightdm-autologin
 %attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) /etc/pam.d/lightdm-greeter
 %attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) /etc/security/blacklist.lightdm
-# XXX: move /etc/apparmor.d to filesystem package or make apparmor subpackage here
-%dir /etc/apparmor.d
-/etc/apparmor.d/lightdm-guest-session
 /etc/dbus-1/system.d/org.freedesktop.DisplayManager.conf
 %attr(755,root,root) %{_bindir}/dm-tool
 %attr(755,root,root) %{_sbindir}/lightdm
