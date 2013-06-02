@@ -36,6 +36,7 @@ BuildRequires:	tar >= 1:1.22
 BuildRequires:	vala
 BuildRequires:	xz
 BuildRequires:	yelp-tools
+Requires:	/usr/bin/X
 Requires:	dbus-x11
 Requires:	lightdm-greeter
 Provides:	XDM
