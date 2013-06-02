@@ -1,13 +1,13 @@
 Summary:	A lightweight display manager
 Summary(hu.UTF-8):	Egy könnyűsúlyú bejelentkezéskezelő
 Name:		lightdm
-Version:	1.6.0
-Release:	1
+Version:	1.7.0
+Release:	0.1
 # library/bindings are LGPLv2 or LGPLv3, the rest GPLv3+
 License:	(LGPLv2 or LGPLv3) and GPLv3+
 Group:		X11/Applications
-Source0:	https://launchpad.net/lightdm/1.6/%{version}/+download/%{name}-%{version}.tar.xz
-# Source0-md5:	a729d991657c619109a89a5cf5421978
+Source0:	https://launchpad.net/lightdm/1.8/%{version}/+download/%{name}-%{version}.tar.xz
+# Source0-md5:	8149739fde801982cfcc8006133df21d
 Source1:	%{name}.pamd
 Patch2:		upstart-path.patch
 URL:		http://www.freedesktop.org/wiki/Software/LightDM
@@ -44,13 +44,6 @@ Provides:	XDM
 Provides:	group(xdm)
 Provides:	user(xdm)
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
-
-# TODO: fix this
-#Unresolved symbols found in: liblightdm-qt-2.so.0.0.0
-#        QPixmap::~QPixmap()
-#        QPixmap::operator QVariant() const
-#        QPixmap::QPixmap(QString const&, char const*, QFlags<Qt::ImageConversionFlag>)
-%define		skip_post_check_so	liblightdm-qt-2.so.0.0.0
 
 %description
 An X display manager that:
@@ -200,28 +193,33 @@ fi
 
 %files libs
 %defattr(644,root,root,755)
+# -gobject
 %attr(755,root,root) %{_libdir}/liblightdm-gobject-1.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/liblightdm-gobject-1.so.0
-%attr(755,root,root) %{_libdir}/liblightdm-qt-2.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/liblightdm-qt-2.so.0
+# -qt
+%attr(755,root,root) %{_libdir}/liblightdm-qt-3.so.*.*.*
+%attr(755,root,root) %ghost %{_libdir}/liblightdm-qt-3.so.0
 
 %files static
 %defattr(644,root,root,755)
 %{_libdir}/liblightdm-gobject-1.a
-%{_libdir}/liblightdm-qt-2.a
+%{_libdir}/liblightdm-qt-3.a
 
 %files devel
 %defattr(644,root,root,755)
+# -gobject
+%{_datadir}/gir-1.0/LightDM-1.gir
+%{_includedir}/lightdm-gobject-1
+%{_pkgconfigdir}/liblightdm-gobject-1.pc
 %{_libdir}/liblightdm-gobject-1.la
 %attr(755,root,root) %{_libdir}/liblightdm-gobject-1.so
-%{_libdir}/liblightdm-qt-2.la
-%attr(755,root,root) %{_libdir}/liblightdm-qt-2.so
-%{_includedir}/lightdm-gobject-1
-%{_includedir}/lightdm-qt-2
-%{_pkgconfigdir}/liblightdm-gobject-1.pc
-%{_pkgconfigdir}/liblightdm-qt-2.pc
-%{_datadir}/gir-1.0/LightDM-1.gir
+# -vala
 %{_datadir}/vala/vapi/liblightdm-gobject-1.vapi
+# -qt
+%{_libdir}/liblightdm-qt-3.la
+%attr(755,root,root) %{_libdir}/liblightdm-qt-3.so
+%{_includedir}/lightdm-qt-3
+%{_pkgconfigdir}/liblightdm-qt-3.pc
 
 %files apidocs
 %defattr(644,root,root,755)
