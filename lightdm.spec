@@ -133,7 +133,7 @@ rm -rf $RPM_BUILD_ROOT
 install -d $RPM_BUILD_ROOT/etc/{pam.d,security,init,dbus-1/system.d} \
 	$RPM_BUILD_ROOT/home/services/xdm \
 	$RPM_BUILD_ROOT%{_datadir}/xgreeters \
-	$RPM_BUILD_ROOT/var/log/lightdm
+	$RPM_BUILD_ROOT/var/{log,cache}/lightdm
 
 cp -p %{SOURCE1} $RPM_BUILD_ROOT/etc/pam.d/lightdm
 touch $RPM_BUILD_ROOT/etc/security/blacklist.lightdm
@@ -188,8 +188,9 @@ fi
 %{_libdir}/girepository-1.0/LightDM-1.typelib
 %dir %{_datadir}/xgreeters
 %{_mandir}/man1/lightdm*
-%attr(750,root,xdm) /var/log/lightdm
-%attr(750,xdm,xdm) /home/services/xdm
+%dir %attr(710,root,root) /var/cache/lightdm
+%dir %attr(710,root,root) /var/log/lightdm
+%dir %attr(750,xdm,xdm) /home/services/xdm
 
 %files libs
 %defattr(644,root,root,755)
