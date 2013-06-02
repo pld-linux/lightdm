@@ -1,12 +1,13 @@
 Summary:	A lightweight display manager
 Summary(hu.UTF-8):	Egy könnyűsúlyú bejelentkezéskezelő
 Name:		lightdm
-Version:	1.5.0
+Version:	1.6.0
 Release:	1
-License:	LGPL v2, LGPL v3
+# library/bindings are LGPLv2 or LGPLv3, the rest GPLv3+
+License:	(LGPLv2 or LGPLv3) and GPLv3+
 Group:		X11/Applications
 Source0:	https://launchpad.net/lightdm/1.6/%{version}/+download/%{name}-%{version}.tar.xz
-# Source0-md5:	e063b73aef31563b4e463a5bbb31b0fc
+# Source0-md5:	a729d991657c619109a89a5cf5421978
 Source1:	%{name}.pamd
 Patch2:		upstart-path.patch
 URL:		http://www.freedesktop.org/wiki/Software/LightDM
@@ -175,7 +176,7 @@ fi
 
 %files -f %{name}.lang
 %defattr(644,root,root,755)
-%doc NEWS TODO
+%doc NEWS
 %dir %{_sysconfdir}/%{name}
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/%{name}/%{name}.conf
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/%{name}/keys.conf
