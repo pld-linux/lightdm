@@ -1,0 +1,20 @@
+--- lightdm-1.7.0/liblightdm-qt/liblightdm-qt-3.pc.in~	2013-03-06 03:40:10.000000000 +0100
++++ lightdm-1.7.0/liblightdm-qt/liblightdm-qt-3.pc.in	2013-08-06 12:58:07.026454692 +0200
+@@ -7,5 +7,5 @@
+ Description: LightDM Qt4 client library
+ Version: @VERSION@
+ Requires: QtCore QtGui
+-Libs: -L${libdir} -llightdm-qt-2
+-Cflags: -I${includedir}/lightdm-qt-2
++Libs: -L${libdir} -llightdm-qt-3
++Cflags: -I${includedir}/lightdm-qt-3
+--- lightdm-1.7.0/liblightdm-qt/liblightdm-qt5-3.pc.in~	2013-03-06 03:40:10.000000000 +0100
++++ lightdm-1.7.0/liblightdm-qt/liblightdm-qt5-3.pc.in	2013-08-06 12:58:19.413252224 +0200
+@@ -7,5 +7,5 @@
+ Description: LightDM Qt5 client library
+ Version: @VERSION@
+ Requires: Qt5Core Qt5Gui
+-Libs: -L${libdir} -llightdm-qt5-2
+-Cflags: -I${includedir}/lightdm-qt5-2
++Libs: -L${libdir} -llightdm-qt5-3
++Cflags: -I${includedir}/lightdm-qt5-3

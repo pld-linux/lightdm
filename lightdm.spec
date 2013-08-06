@@ -2,13 +2,14 @@ Summary:	A lightweight display manager
 Summary(hu.UTF-8):	Egy könnyűsúlyú bejelentkezéskezelő
 Name:		lightdm
 Version:	1.7.0
-Release:	1
+Release:	2
 # library/bindings are LGPLv2 or LGPLv3, the rest GPLv3+
 License:	(LGPLv2 or LGPLv3) and GPLv3+
 Group:		X11/Applications
 Source0:	https://launchpad.net/lightdm/1.8/%{version}/+download/%{name}-%{version}.tar.xz
 # Source0-md5:	8149739fde801982cfcc8006133df21d
 Source1:	%{name}.pamd
+Patch0:		lightdm-qt-3.patch
 Patch2:		upstart-path.patch
 URL:		http://www.freedesktop.org/wiki/Software/LightDM
 BuildRequires:	QtCore-devel
@@ -120,6 +121,7 @@ Upstart támogatás lightdm-hez.
 
 %prep
 %setup -q
+%patch0 -p1
 %patch2 -p1
 
 %build
