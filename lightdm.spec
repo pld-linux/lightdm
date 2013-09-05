@@ -1,15 +1,14 @@
 Summary:	A lightweight display manager
 Summary(hu.UTF-8):	Egy könnyűsúlyú bejelentkezéskezelő
 Name:		lightdm
-Version:	1.7.0
-Release:	2
+Version:	1.7.12
+Release:	1
 # library/bindings are LGPLv2 or LGPLv3, the rest GPLv3+
 License:	(LGPLv2 or LGPLv3) and GPLv3+
 Group:		X11/Applications
-Source0:	https://launchpad.net/lightdm/1.8/%{version}/+download/%{name}-%{version}.tar.xz
-# Source0-md5:	8149739fde801982cfcc8006133df21d
+Source0:	https://launchpad.net/lightdm/1.7/%{version}/+download/%{name}-%{version}.tar.xz
+# Source0-md5:	73d6a917ed667a45c194df6c4f270b80
 Source1:	%{name}.pamd
-Patch0:		lightdm-qt-3.patch
 Patch2:		upstart-path.patch
 URL:		http://www.freedesktop.org/wiki/Software/LightDM
 BuildRequires:	QtCore-devel
@@ -20,6 +19,7 @@ BuildRequires:	autoconf
 BuildRequires:	dbus-glib-devel
 BuildRequires:	docbook-dtd412-xml
 BuildRequires:	gettext-devel
+BuildRequires:	glib2-devel >= 1:2.30
 BuildRequires:	gnome-common
 BuildRequires:	gnome-doc-utils
 BuildRequires:	gtk+2-devel >= 2:2.24
@@ -121,7 +121,6 @@ Upstart támogatás lightdm-hez.
 
 %prep
 %setup -q
-%patch0 -p1
 %patch2 -p1
 
 %build
