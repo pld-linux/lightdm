@@ -45,6 +45,7 @@ Requires:	lightdm-greeter
 Provides:	XDM
 Provides:	group(xdm)
 Provides:	user(xdm)
+Provides:	xinitrc-ng
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
