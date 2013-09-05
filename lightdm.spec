@@ -9,7 +9,8 @@ Group:		X11/Applications
 Source0:	https://launchpad.net/lightdm/1.7/%{version}/+download/%{name}-%{version}.tar.xz
 # Source0-md5:	73d6a917ed667a45c194df6c4f270b80
 Source1:	%{name}.pamd
-Patch2:		upstart-path.patch
+Patch0:		config.patch
+Patch1:		upstart-path.patch
 URL:		http://www.freedesktop.org/wiki/Software/LightDM
 BuildRequires:	QtCore-devel
 BuildRequires:	QtDBus-devel
@@ -121,7 +122,8 @@ Upstart támogatás lightdm-hez.
 
 %prep
 %setup -q
-%patch2 -p1
+%patch0 -p1
+%patch1 -p1
 
 %build
 %{__libtoolize}

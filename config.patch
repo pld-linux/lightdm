@@ -1,0 +1,23 @@
+--- lightdm-1.7.12/data/lightdm.conf~	2013-08-29 03:54:41.000000000 +0300
++++ lightdm-1.7.12/data/lightdm.conf	2013-09-06 00:17:18.015231835 +0300
+@@ -18,9 +18,9 @@
+ #
+ [LightDM]
+ #start-default-seat=true
+-#greeter-user=lightdm
++greeter-user=xdm
+ #minimum-display-number=0
+-#minimum-vt=7
++minimum-vt=7
+ #lock-memory=true
+ #user-authority-in-system-dir=false
+ #guest-account-script=guest-account
+@@ -89,7 +89,7 @@
+ #user-session=default
+ #allow-guest=true
+ #guest-session=UNIMPLEMENTED
+-#session-wrapper=lightdm-session
++session-wrapper=/etc/X11/xinit/xinitrc
+ #greeter-wrapper=
+ #display-setup-script=
+ #greeter-setup-script=
