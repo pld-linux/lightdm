@@ -42,10 +42,10 @@ BuildRequires:	yelp-tools
 Requires:	/usr/bin/X
 Requires:	dbus-x11
 Requires:	lightdm-greeter
+Requires:	xinitrc-ng >= 1.1-2
 Provides:	XDM
 Provides:	group(xdm)
 Provides:	user(xdm)
-Provides:	xinitrc-ng
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
