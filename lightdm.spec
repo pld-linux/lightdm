@@ -2,7 +2,7 @@ Summary:	A lightweight display manager
 Summary(hu.UTF-8):	Egy könnyűsúlyú bejelentkezéskezelő
 Name:		lightdm
 Version:	1.7.12
-Release:	4
+Release:	5
 # library/bindings are LGPLv2 or LGPLv3, the rest GPLv3+
 License:	(LGPLv2 or LGPLv3) and GPLv3+
 Group:		X11/Applications
