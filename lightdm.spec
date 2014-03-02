@@ -9,6 +9,8 @@ Group:		X11/Applications
 Source0:	https://launchpad.net/lightdm/1.7/%{version}/+download/%{name}-%{version}.tar.xz
 # Source0-md5:	73d6a917ed667a45c194df6c4f270b80
 Source1:	%{name}.pamd
+Source2:	%{name}-autologin.pamd
+Source3:	%{name}-greeter.pamd
 Patch0:		config.patch
 Patch1:		upstart-path.patch
 Patch2:		lightdm-nodaemon_option.patch
@@ -160,6 +162,8 @@ install -d $RPM_BUILD_ROOT/etc/{pam.d,security,init,dbus-1/system.d} \
 	$RPM_BUILD_ROOT/var/{log,cache}/lightdm
 
 cp -p %{SOURCE1} $RPM_BUILD_ROOT/etc/pam.d/lightdm
+cp -p %{SOURCE2} $RPM_BUILD_ROOT/etc/pam.d/lightdm-autologin
+cp -p %{SOURCE3} $RPM_BUILD_ROOT/etc/pam.d/lightdm-greeter
 touch $RPM_BUILD_ROOT/etc/security/blacklist.lightdm
 cp -p data/init/%{name}.conf $RPM_BUILD_ROOT/etc/init
 
