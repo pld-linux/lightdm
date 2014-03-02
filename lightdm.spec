@@ -2,7 +2,7 @@ Summary:	A lightweight display manager
 Summary(hu.UTF-8):	Egy könnyűsúlyú bejelentkezéskezelő
 Name:		lightdm
 Version:	1.7.12
-Release:	5
+Release:	6
 # library/bindings are LGPLv2 or LGPLv3, the rest GPLv3+
 License:	(LGPLv2 or LGPLv3) and GPLv3+
 Group:		X11/Applications
@@ -11,9 +11,10 @@ Source0:	https://launchpad.net/lightdm/1.7/%{version}/+download/%{name}-%{versio
 Source1:	%{name}.pamd
 Source2:	%{name}-autologin.pamd
 Source3:	%{name}-greeter.pamd
+Source4:	%{name}.init
 Patch0:		config.patch
 Patch1:		upstart-path.patch
-Patch2:		lightdm-nodaemon_option.patch
+Patch2:		%{name}-nodaemon_option.patch
 URL:		http://www.freedesktop.org/wiki/Software/LightDM
 BuildRequires:	QtCore-devel
 BuildRequires:	QtDBus-devel
@@ -39,7 +40,7 @@ BuildRequires:	perl-XML-Parser
 BuildRequires:	perl-base
 BuildRequires:	pkgconfig
 BuildRequires:	qt4-build
-BuildRequires:	rpmbuild(macros) >= 1.583
+BuildRequires:	rpmbuild(macros) >= 1.689
 BuildRequires:	tar >= 1:1.22
 BuildRequires:	vala
 BuildRequires:	xz
@@ -113,18 +114,23 @@ Group:		Documentation
 %description apidocs
 lightdm API documentation.
 
-%package upstart
-Summary:	Upstart job for lightdm
-Summary(hu.UTF-8):	Upstart támogatás lightdm-hez
-Group:		Daemons
-Requires:	%{name} = %{epoch}:%{version}-%{release}
-Requires:	upstart >= 0.6
+%package init
+Summary:	Init script for Lightdm
+Summary(pl.UTF-8):	Skrypt init dla Lightdm-a
+Group:		X11/Applications
+Requires(post,preun):	/sbin/chkconfig
+Requires(post,postun):	systemd-units >= 38
+Requires:	%{name} = %{version}-%{release}
+Requires:	rc-scripts >= 0.4.3.0
+Requires:	systemd-units >= 38
+Obsoletes:	lightdm-upstart < 1.7.12-6
+Conflicts:	upstart < 0.6
 
-%description upstart
-Upstart job for lightdm.
+%description init
+Init script for Lightdm.
 
-%description upstart -l hu.UTF-8
-Upstart támogatás lightdm-hez.
+%description init -l pl.UTF-8
+Skrypt init dla Lightdm-a.
 
 %prep
 %setup -q
@@ -155,20 +161,25 @@ rm -rf $RPM_BUILD_ROOT
 %{__make} install \
 	DESTDIR=$RPM_BUILD_ROOT
 
-install -d $RPM_BUILD_ROOT/etc/{pam.d,security,init,dbus-1/system.d} \
+install -d $RPM_BUILD_ROOT/etc/{pam.d,security,init,rc.d/init.d,dbus-1/system.d} \
 	$RPM_BUILD_ROOT/home/services/xdm \
 	$RPM_BUILD_ROOT%{_datadir}/xgreeters \
 	$RPM_BUILD_ROOT%{_datadir}/lightdm/remote-sessions \
+	$RPM_BUILD_ROOT%{systemdunitdir} \
 	$RPM_BUILD_ROOT/var/{log,cache}/lightdm
+
+# initscripts
+cp -p data/init/%{name}.conf $RPM_BUILD_ROOT/etc/init
+install -p %{SOURCE4} $RPM_BUILD_ROOT/etc/rc.d/init.d/lightdm
+ln -s /dev/null $RPM_BUILD_ROOT%{systemdunitdir}/lxdm.service
 
 cp -p %{SOURCE1} $RPM_BUILD_ROOT/etc/pam.d/lightdm
 cp -p %{SOURCE2} $RPM_BUILD_ROOT/etc/pam.d/lightdm-autologin
 cp -p %{SOURCE3} $RPM_BUILD_ROOT/etc/pam.d/lightdm-greeter
 touch $RPM_BUILD_ROOT/etc/security/blacklist.lightdm
-cp -p data/init/%{name}.conf $RPM_BUILD_ROOT/etc/init
 
 # We don't ship AppAmor
-rm -rv $RPM_BUILD_ROOT%{_sysconfdir}/apparmor.d
+rm -rv $RPM_BUILD_ROOT/etc/apparmor.d
 
 %{__rm} -r $RPM_BUILD_ROOT%{_localedir}/{lb,wae}
 
@@ -193,11 +204,21 @@ fi
 %post	libs-qt -p /sbin/ldconfig
 %postun	libs-qt -p /sbin/ldconfig
 
-%post upstart
-%upstart_post lightdm
+%post init
+/sbin/chkconfig --add %{name}
+%service -n %{name} restart
+%upstart_post %{name}
+%systemd_reload
 
-%postun upstart
-%upstart_postun lightdm
+%preun
+if [ "$1" = "0" ]; then
+	/sbin/chkconfig --del %{name}
+	%service %{name} stop
+fi
+
+%postun init
+%systemd_reload
+%upstart_postun %{name}
 
 %files -f %{name}.lang
 %defattr(644,root,root,755)
@@ -257,6 +278,8 @@ fi
 %defattr(644,root,root,755)
 %{_gtkdocdir}/lightdm-gobject-1
 
-%files upstart
+%files init
 %defattr(644,root,root,755)
+%attr(754,root,root) /etc/rc.d/init.d/%{name}
 %config(noreplace) %verify(not md5 mtime size) /etc/init/%{name}.conf
+%{systemdunitdir}/lxdm.service
