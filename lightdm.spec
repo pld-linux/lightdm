@@ -2,7 +2,7 @@ Summary:	A lightweight display manager
 Summary(hu.UTF-8):	Egy könnyűsúlyú bejelentkezéskezelő
 Name:		lightdm
 Version:	1.7.18
-Release:	1
+Release:	2
 # library/bindings are LGPLv2 or LGPLv3, the rest GPLv3+
 License:	(LGPLv2 or LGPLv3) and GPLv3+
 Group:		X11/Applications
@@ -167,7 +167,7 @@ install -d $RPM_BUILD_ROOT/etc/{pam.d,security,init,rc.d/init.d,dbus-1/system.d}
 # initscripts
 cp -p data/init/%{name}.conf $RPM_BUILD_ROOT/etc/init
 install -p %{SOURCE4} $RPM_BUILD_ROOT/etc/rc.d/init.d/lightdm
-ln -s /dev/null $RPM_BUILD_ROOT%{systemdunitdir}/lxdm.service
+ln -s /dev/null $RPM_BUILD_ROOT%{systemdunitdir}/lightdm.service
 
 cp -p %{SOURCE1} $RPM_BUILD_ROOT/etc/pam.d/lightdm
 cp -p %{SOURCE2} $RPM_BUILD_ROOT/etc/pam.d/lightdm-autologin
@@ -278,4 +278,4 @@ fi
 %defattr(644,root,root,755)
 %attr(754,root,root) /etc/rc.d/init.d/%{name}
 %config(noreplace) %verify(not md5 mtime size) /etc/init/%{name}.conf
-%{systemdunitdir}/lxdm.service
+%{systemdunitdir}/lightdm.service
