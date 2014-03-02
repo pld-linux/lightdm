@@ -181,6 +181,12 @@ rm -rf $RPM_BUILD_ROOT
 %groupadd -g 55 -r -f xdm
 %useradd -u 55 -r -d /home/services/xdm -s /bin/false -c "X Display Manager" -g xdm xdm
 
+%postun
+if [ "$1" = "0" ]; then
+	%userremove xdm
+	%groupremove xdm
+fi
+
 %post	libs-gobject -p /sbin/ldconfig
 %postun	libs-gobject -p /sbin/ldconfig
 
@@ -192,11 +198,6 @@ rm -rf $RPM_BUILD_ROOT
 
 %postun upstart
 %upstart_postun lightdm
-
-if [ "$1" = "0" ]; then
-	%userremove xdm
-	%groupremove xdm
-fi
 
 %files -f %{name}.lang
 %defattr(644,root,root,755)
