@@ -12,6 +12,8 @@
 
 upstart_controlled
 
+pidfile=/var/run/lightdm.pid
+
 start() {
 	# Check if the service is already running?
 	if [ -f /var/lock/subsys/lightdm ]; then
@@ -20,8 +22,7 @@ start() {
 	fi
 
 	msg_starting "Lightdm Display Manager"
-	daemon /usr/sbin/lightdm
-	ok
+	daemon --pidfile $pidfile /usr/sbin/lightdm --pidfile $pidfile
 	[ $RETVAL -eq 0 ] && touch /var/lock/subsys/lightdm
 }
 
@@ -33,7 +34,7 @@ stop() {
 
 	# Stop daemons.
 	msg_stopping "Lightdm Display Manager"
-	killproc lightdm
+	killproc --pidfile $pidfile lightdm
 	rm -f /var/lock/subsys/lightdm
 }
 
@@ -68,7 +69,7 @@ case "$1" in
 	condrestart 7
 	;;
   status)
-	status lightdm
+	status --pidfile $pidfile lightdm
 	RETVAL=$?
 	;;
   *)
