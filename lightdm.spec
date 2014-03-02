@@ -1,17 +1,24 @@
+# TODO
+# - qt5
+#
+# Conditional build:
+%bcond_with	tests		# build without tests (tests fail mostly)
+
 Summary:	A lightweight display manager
 Summary(hu.UTF-8):	Egy könnyűsúlyú bejelentkezéskezelő
 Name:		lightdm
-Version:	1.7.18
-Release:	2
+Version:	1.9.8
+Release:	1
 # library/bindings are LGPLv2 or LGPLv3, the rest GPLv3+
 License:	(LGPLv2 or LGPLv3) and GPLv3+
 Group:		X11/Applications
-Source0:	https://launchpad.net/lightdm/1.7/%{version}/+download/%{name}-%{version}.tar.xz
-# Source0-md5:	f17a8a5203f32f79a231e52f7e1a2d85
+Source0:	https://launchpad.net/lightdm/1.9/%{version}/+download/%{name}-%{version}.tar.xz
+# Source0-md5:	dcd37257fe672235e246a3abf1c5273b
 Source1:	%{name}.pamd
 Source2:	%{name}-autologin.pamd
 Source3:	%{name}-greeter.pamd
 Source4:	%{name}.init
+Source5:	%{name}-tmpfiles.conf
 Patch0:		config.patch
 Patch1:		upstart-path.patch
 Patch2:		%{name}-nodaemon_option.patch
@@ -144,35 +151,42 @@ Skrypt init dla Lightdm-a.
 %configure \
 	--disable-silent-rules \
 	--disable-static \
-	--disable-tests \
+	%{__enable tests} \
 	--enable-liblightdm-qt \
+	--disable-liblightdm-qt5 \
 	--with-html-dir=%{_gtkdocdir} \
 	--enable-gtk-doc \
 	--with-greeter-session=lightdm-gtk-greeter \
 	--with-greeter-user=xdm
 %{__make}
+%{?with_tests:%{__make} check}
 
 %install
 rm -rf $RPM_BUILD_ROOT
 %{__make} install \
+	INSTALL='install -p' \
 	DESTDIR=$RPM_BUILD_ROOT
 
 install -d $RPM_BUILD_ROOT/etc/{pam.d,security,init,rc.d/init.d,dbus-1/system.d} \
+	$RPM_BUILD_ROOT%{_sysconfdir}/%{name}/%{name}.conf.d \
 	$RPM_BUILD_ROOT/home/services/xdm \
 	$RPM_BUILD_ROOT%{_datadir}/xgreeters \
-	$RPM_BUILD_ROOT%{_datadir}/lightdm/remote-sessions \
+	$RPM_BUILD_ROOT%{_datadir}/%{name}/{remote-sessions,%{name}.conf.d} \
 	$RPM_BUILD_ROOT%{systemdunitdir} \
-	$RPM_BUILD_ROOT/var/{log,cache}/lightdm
+	$RPM_BUILD_ROOT/var/{log,cache}/%{name}
+
+install -d $RPM_BUILD_ROOT{/var/run/lightdm,%{systemdtmpfilesdir}}
+cp -p %{SOURCE5} $RPM_BUILD_ROOT%{systemdtmpfilesdir}/lightdm.conf
 
 # initscripts
 cp -p data/init/%{name}.conf $RPM_BUILD_ROOT/etc/init
-install -p %{SOURCE4} $RPM_BUILD_ROOT/etc/rc.d/init.d/lightdm
-ln -s /dev/null $RPM_BUILD_ROOT%{systemdunitdir}/lightdm.service
+install -p %{SOURCE4} $RPM_BUILD_ROOT/etc/rc.d/init.d/%{name}
+ln -s /dev/null $RPM_BUILD_ROOT%{systemdunitdir}/%{name}.service
 
-cp -p %{SOURCE1} $RPM_BUILD_ROOT/etc/pam.d/lightdm
+cp -p %{SOURCE1} $RPM_BUILD_ROOT/etc/pam.d/%{name}
 cp -p %{SOURCE2} $RPM_BUILD_ROOT/etc/pam.d/lightdm-autologin
 cp -p %{SOURCE3} $RPM_BUILD_ROOT/etc/pam.d/lightdm-greeter
-touch $RPM_BUILD_ROOT/etc/security/blacklist.lightdm
+touch $RPM_BUILD_ROOT/etc/security/blacklist.%{name}
 
 # We don't ship AppAmor
 rm -rv $RPM_BUILD_ROOT/etc/apparmor.d
@@ -220,27 +234,29 @@ fi
 %defattr(644,root,root,755)
 %doc NEWS
 %dir %{_sysconfdir}/%{name}
+%dir %{_sysconfdir}/%{name}/%{name}.conf.d
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/%{name}/%{name}.conf
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/%{name}/keys.conf
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/%{name}/users.conf
-%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) /etc/pam.d/lightdm
+%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) /etc/pam.d/%{name}
 %attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) /etc/pam.d/lightdm-autologin
 %attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) /etc/pam.d/lightdm-greeter
-%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) /etc/security/blacklist.lightdm
+%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) /etc/security/blacklist.%{name}
 /etc/dbus-1/system.d/org.freedesktop.DisplayManager.conf
 %attr(755,root,root) %{_bindir}/dm-tool
 %attr(755,root,root) %{_sbindir}/lightdm
-%dir %{_libdir}/%{name}
-%attr(755,root,root) %{_libdir}/%{name}/gdmflexiserver
-%attr(755,root,root) %{_libdir}/%{name}/lightdm-guest-session-wrapper
-%attr(755,root,root) %{_libdir}/%{name}/lightdm-set-defaults
+%attr(755,root,root) %{_libdir}/lightdm-guest-session
 %{_libdir}/girepository-1.0/LightDM-1.typelib
+%{systemdtmpfilesdir}/lightdm.conf
 %dir %{_datadir}/xgreeters
 %dir %{_datadir}/%{name}
 %dir %{_datadir}/%{name}/remote-sessions
-%{_mandir}/man1/lightdm*
-%dir %attr(710,root,root) /var/cache/lightdm
-%dir %attr(710,root,root) /var/log/lightdm
+%dir %{_datadir}/%{name}/%{name}.conf.d
+%{_mandir}/man1/dm-tool.1*
+%{_mandir}/man1/%{name}.1*
+%dir %attr(710,root,root) /var/cache/%{name}
+%dir %attr(710,root,root) /var/log/%{name}
+%dir %attr(770,root,root) /var/run/%{name}
 %dir %attr(750,xdm,xdm) /home/services/xdm
 
 %files libs-gobject
@@ -278,4 +294,4 @@ fi
 %defattr(644,root,root,755)
 %attr(754,root,root) /etc/rc.d/init.d/%{name}
 %config(noreplace) %verify(not md5 mtime size) /etc/init/%{name}.conf
-%{systemdunitdir}/lightdm.service
+%{systemdunitdir}/%{name}.service
