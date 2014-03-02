@@ -40,7 +40,7 @@ BuildRequires:	perl-XML-Parser
 BuildRequires:	perl-base
 BuildRequires:	pkgconfig
 BuildRequires:	qt4-build
-BuildRequires:	rpmbuild(macros) >= 1.689
+BuildRequires:	rpmbuild(macros) >= 1.690
 BuildRequires:	tar >= 1:1.22
 BuildRequires:	vala
 BuildRequires:	xz
