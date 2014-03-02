@@ -22,7 +22,7 @@ start() {
 	fi
 
 	msg_starting "Lightdm Display Manager"
-	daemon --pidfile $pidfile /usr/sbin/lightdm --pidfile $pidfile
+	daemon --pidfile $pidfile --fork /usr/sbin/lightdm --pidfile $pidfile
 	[ $RETVAL -eq 0 ] && touch /var/lock/subsys/lightdm
 }
 
