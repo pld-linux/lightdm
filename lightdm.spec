@@ -173,6 +173,7 @@ install -d $RPM_BUILD_ROOT/etc/{pam.d,security,init,rc.d/init.d,dbus-1/system.d}
 	$RPM_BUILD_ROOT%{_datadir}/xgreeters \
 	$RPM_BUILD_ROOT%{_datadir}/%{name}/{remote-sessions,%{name}.conf.d} \
 	$RPM_BUILD_ROOT%{systemdunitdir} \
+	$RPM_BUILD_ROOT/var/lib/%{name}-data \
 	$RPM_BUILD_ROOT/var/{log,cache}/%{name}
 
 install -d $RPM_BUILD_ROOT{/var/run/lightdm,%{systemdtmpfilesdir}}
@@ -257,6 +258,7 @@ fi
 %dir %attr(710,root,root) /var/cache/%{name}
 %dir %attr(710,root,root) /var/log/%{name}
 %dir %attr(770,root,root) /var/run/%{name}
+%dir %attr(700,root,root) /var/lib/%{name}-data
 %dir %attr(750,xdm,xdm) /home/services/xdm
 
 %files libs-gobject
