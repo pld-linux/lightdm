@@ -19,9 +19,7 @@ URL:		http://www.freedesktop.org/wiki/Software/LightDM
 BuildRequires:	QtCore-devel
 BuildRequires:	QtDBus-devel
 BuildRequires:	QtGui-devel
-BuildRequires:	QtNetwork-devel
 BuildRequires:	autoconf
-BuildRequires:	dbus-glib-devel
 BuildRequires:	docbook-dtd412-xml
 BuildRequires:	gettext-devel
 BuildRequires:	glib2-devel >= 1:2.30
@@ -29,9 +27,7 @@ BuildRequires:	gnome-common
 BuildRequires:	gnome-doc-utils
 BuildRequires:	gtk+2-devel >= 2:2.24
 BuildRequires:	gtk-doc
-BuildRequires:	gtk-webkit-devel
 BuildRequires:	intltool
-BuildRequires:	itstool
 BuildRequires:	libgcrypt-devel
 BuildRequires:	libtool
 BuildRequires:	libxklavier-devel
