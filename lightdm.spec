@@ -8,7 +8,7 @@ Summary:	A lightweight display manager
 Summary(hu.UTF-8):	Egy könnyűsúlyú bejelentkezéskezelő
 Name:		lightdm
 Version:	1.9.8
-Release:	1
+Release:	2
 # library/bindings are LGPLv2 or LGPLv3, the rest GPLv3+
 License:	(LGPLv2 or LGPLv3) and GPLv3+
 Group:		X11/Applications
@@ -113,6 +113,9 @@ LightDM clients to use to interface with LightDM.
 %package apidocs
 Summary:	lightdm API documentation
 Group:		Documentation
+%if "%{_rpmversion}" >= "5"
+BuildArch:	noarch
+%endif
 
 %description apidocs
 lightdm API documentation.
