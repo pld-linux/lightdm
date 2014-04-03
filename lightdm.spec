@@ -7,13 +7,13 @@
 Summary:	A lightweight display manager
 Summary(hu.UTF-8):	Egy könnyűsúlyú bejelentkezéskezelő
 Name:		lightdm
-Version:	1.9.8
-Release:	2
+Version:	1.9.14
+Release:	1
 # library/bindings are LGPLv2 or LGPLv3, the rest GPLv3+
 License:	(LGPLv2 or LGPLv3) and GPLv3+
 Group:		X11/Applications
 Source0:	https://launchpad.net/lightdm/1.9/%{version}/+download/%{name}-%{version}.tar.xz
-# Source0-md5:	dcd37257fe672235e246a3abf1c5273b
+# Source0-md5:	544b67deb1fce441ed9441f267e51339
 Source1:	%{name}.pamd
 Source2:	%{name}-autologin.pamd
 Source3:	%{name}-greeter.pamd
