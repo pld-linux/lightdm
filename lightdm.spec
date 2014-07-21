@@ -1,19 +1,16 @@
-# TODO
-# - qt5
-#
 # Conditional build:
 %bcond_with	tests		# build without tests (tests fail mostly)
 
 Summary:	A lightweight display manager
 Summary(hu.UTF-8):	Egy könnyűsúlyú bejelentkezéskezelő
 Name:		lightdm
-Version:	1.9.14
+Version:	1.10.1
 Release:	1
 # library/bindings are LGPLv2 or LGPLv3, the rest GPLv3+
 License:	(LGPLv2 or LGPLv3) and GPLv3+
 Group:		X11/Applications
-Source0:	https://launchpad.net/lightdm/1.9/%{version}/+download/%{name}-%{version}.tar.xz
-# Source0-md5:	544b67deb1fce441ed9441f267e51339
+Source0:	https://launchpad.net/lightdm/1.10/%{version}/+download/%{name}-%{version}.tar.xz
+# Source0-md5:	b237530f833bd3aafe613a85b76a5826
 Source1:	%{name}.pamd
 Source2:	%{name}-autologin.pamd
 Source3:	%{name}-greeter.pamd
@@ -22,30 +19,39 @@ Source5:	%{name}-tmpfiles.conf
 Patch0:		config.patch
 Patch1:		upstart-path.patch
 Patch2:		%{name}-nodaemon_option.patch
+Patch3:		%{name}-qt5.patch
 URL:		http://www.freedesktop.org/wiki/Software/LightDM
+BuildRequires:	Qt5Core-devel
+BuildRequires:	Qt5DBus-devel
+BuildRequires:	Qt5Gui-devel
 BuildRequires:	QtCore-devel
 BuildRequires:	QtDBus-devel
 BuildRequires:	QtGui-devel
 BuildRequires:	autoconf
+BuildRequires:	automake >= 1:1.11
 BuildRequires:	docbook-dtd412-xml
 BuildRequires:	gettext-devel
 BuildRequires:	glib2-devel >= 1:2.30
 BuildRequires:	gnome-common
 BuildRequires:	gnome-doc-utils
-BuildRequires:	gtk+2-devel >= 2:2.24
+BuildRequires:	gobject-introspection-devel >= 0.9.5
 BuildRequires:	gtk-doc
-BuildRequires:	intltool
+BuildRequires:	intltool >= 0.35.0
 BuildRequires:	libgcrypt-devel
 BuildRequires:	libtool
+BuildRequires:	libxcb-devel
 BuildRequires:	libxklavier-devel
 BuildRequires:	pam-devel
 BuildRequires:	perl-XML-Parser
 BuildRequires:	perl-base
 BuildRequires:	pkgconfig
 BuildRequires:	qt4-build
+BuildRequires:	qt5-build
 BuildRequires:	rpmbuild(macros) >= 1.690
 BuildRequires:	tar >= 1:1.22
 BuildRequires:	vala
+BuildRequires:	xorg-lib-libX11-devel
+BuildRequires:	xorg-lib-libXdmcp-devel
 BuildRequires:	xz
 BuildRequires:	yelp-tools
 Requires:	/usr/bin/X
@@ -92,22 +98,41 @@ Requires:	%{name}-libs-gobject = %{version}-%{release}
 This package contains development files for a GObject based library
 for LightDM clients to use to interface with LightDM.
 
-%package libs-qt
-Summary:	LightDM Qt client library
+%package libs-qt4
+Summary:	LightDM Qt4 client library
 Group:		Libraries
+Obsoletes:	lightdm-libs-qt
 Conflicts:	lightdm-libs < 1.7.0-0.6
 
-%description libs-qt
-This package contains a Qt based library for LightDM clients to use to
-interface with LightDM.
+%description libs-qt4
+This package contains a Qt4 based library for LightDM clients to use
+to interface with LightDM.
 
-%package libs-qt-devel
-Summary:	Development files for %{name}-qt
+%package libs-qt4-devel
+Summary:	Development files for %{name}-qt4
 Group:		Development/Libraries
-Requires:	%{name}-libs-qt = %{version}-%{release}
+Requires:	%{name}-libs-qt4 = %{version}-%{release}
+Obsoletes:	lightdm-libs-qt-devel
 
-%description libs-qt-devel
-This package contains development files for a Qt based library for
+%description libs-qt4-devel
+This package contains development files for a Qt4 based library for
+LightDM clients to use to interface with LightDM.
+
+%package libs-qt5
+Summary:	LightDM Qt5 client library
+Group:		Libraries
+
+%description libs-qt5
+This package contains a Qt5 based library for LightDM clients to use
+to interface with LightDM.
+
+%package libs-qt5-devel
+Summary:	Development files for %{name}-qt5
+Group:		Development/Libraries
+Requires:	%{name}-libs-qt5 = %{version}-%{release}
+
+%description libs-qt5-devel
+This package contains development files for a Qt5 based library for
 LightDM clients to use to interface with LightDM.
 
 %package apidocs
@@ -143,6 +168,7 @@ Skrypt init dla Lightdm-a.
 %patch0 -p1
 %patch1 -p1
 %patch2 -p1
+%patch3 -p0
 
 %build
 %{__libtoolize}
@@ -155,8 +181,9 @@ Skrypt init dla Lightdm-a.
 	--disable-silent-rules \
 	--disable-static \
 	%{__enable tests} \
+	--enable-liblightdm-gobject \
 	--enable-liblightdm-qt \
-	--disable-liblightdm-qt5 \
+	--enable-liblightdm-qt5 \
 	--with-html-dir=%{_gtkdocdir} \
 	--enable-gtk-doc \
 	--with-greeter-session=lightdm-gtk-greeter \
@@ -215,8 +242,11 @@ fi
 %post	libs-gobject -p /sbin/ldconfig
 %postun	libs-gobject -p /sbin/ldconfig
 
-%post	libs-qt -p /sbin/ldconfig
-%postun	libs-qt -p /sbin/ldconfig
+%post	libs-qt4 -p /sbin/ldconfig
+%postun	libs-qt4 -p /sbin/ldconfig
+
+%post	libs-qt5 -p /sbin/ldconfig
+%postun	libs-qt5 -p /sbin/ldconfig
 
 %post init
 /sbin/chkconfig --add %{name}
@@ -269,10 +299,15 @@ fi
 %attr(755,root,root) %{_libdir}/liblightdm-gobject-1.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/liblightdm-gobject-1.so.0
 
-%files libs-qt
+%files libs-qt4
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/liblightdm-qt-3.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/liblightdm-qt-3.so.0
+
+%files libs-qt5
+%defattr(644,root,root,755)
+%attr(755,root,root) %{_libdir}/liblightdm-qt5-3.so.*.*.*
+%attr(755,root,root) %ghost %{_libdir}/liblightdm-qt5-3.so.0
 
 %files libs-gobject-devel
 %defattr(644,root,root,755)
@@ -284,12 +319,19 @@ fi
 # -vala
 %{_datadir}/vala/vapi/liblightdm-gobject-1.vapi
 
-%files libs-qt-devel
+%files libs-qt4-devel
 %defattr(644,root,root,755)
 %{_libdir}/liblightdm-qt-3.la
 %attr(755,root,root) %{_libdir}/liblightdm-qt-3.so
 %{_includedir}/lightdm-qt-3
 %{_pkgconfigdir}/liblightdm-qt-3.pc
+
+%files libs-qt5-devel
+%defattr(644,root,root,755)
+%{_libdir}/liblightdm-qt5-3.la
+%attr(755,root,root) %{_libdir}/liblightdm-qt5-3.so
+%{_includedir}/lightdm-qt5-3
+%{_pkgconfigdir}/liblightdm-qt5-3.pc
 
 %files apidocs
 %defattr(644,root,root,755)
