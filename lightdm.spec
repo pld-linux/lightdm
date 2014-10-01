@@ -6,6 +6,7 @@
 Summary:	A lightweight display manager
 Summary(hu.UTF-8):	Egy könnyűsúlyú bejelentkezéskezelő
 Name:		lightdm
+# Odd versions are development, use only Even versions here (1.x = x odd/even)
 Version:	1.12.0
 Release:	1
 # library/bindings are LGPLv2 or LGPLv3, the rest GPLv3+
