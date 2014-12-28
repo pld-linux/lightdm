@@ -27,7 +27,7 @@ URL:		http://www.freedesktop.org/wiki/Software/LightDM
 BuildRequires:	autoconf
 BuildRequires:	automake >= 1:1.11
 BuildRequires:	docbook-dtd412-xml
-BuildRequires:	gettext-devel
+BuildRequires:	gettext-tools
 BuildRequires:	glib2-devel >= 1:2.30
 BuildRequires:	gnome-common
 BuildRequires:	gnome-doc-utils
