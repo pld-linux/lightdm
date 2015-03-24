@@ -7,13 +7,13 @@ Summary:	A lightweight display manager
 Summary(hu.UTF-8):	Egy könnyűsúlyú bejelentkezéskezelő
 Name:		lightdm
 # Odd versions are development, use only Even versions here (1.x = x odd/even)
-Version:	1.12.2
-Release:	2
+Version:	1.14.0
+Release:	1
 # library/bindings are LGPLv2 or LGPLv3, the rest GPLv3+
 License:	(LGPLv2 or LGPLv3) and GPLv3+
 Group:		X11/Applications
-Source0:	https://launchpad.net/lightdm/1.12/%{version}/+download/%{name}-%{version}.tar.xz
-# Source0-md5:	573e2cf8acf96df3ed7c4968749a80ad
+Source0:	https://launchpad.net/lightdm/1.14/%{version}/+download/%{name}-%{version}.tar.xz
+# Source0-md5:	616aaa793a699b50ff09e3851ce7e7cf
 Source1:	%{name}.pamd
 Source2:	%{name}-autologin.pamd
 Source3:	%{name}-greeter.pamd
@@ -69,6 +69,8 @@ Provides:	XDM
 Provides:	group(xdm)
 Provides:	user(xdm)
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
+
+%define bashdir %{_sysconfdir}/bash_completion.d
 
 %description
 An X display manager that:
@@ -170,6 +172,22 @@ Init script for Lightdm.
 %description init -l pl.UTF-8
 Skrypt init dla Lightdm-a.
 
+%package -n bash-completion-lightdm
+Summary:        Bash completion for LightDM
+Summary(pl.UTF-8):      Bashowe uzupełnianie parametrów dla LightDM
+Group:          Applications/Shells
+Requires:       %{name} = %{version}-%{release}
+Requires:       bash-completion
+%if "%{_rpmversion}" >= "5" 
+BuildArch:      noarch
+%endif
+
+%description -n bash-completion-lightdm
+Bash completion for LightDM.
+
+%description -n bash-completion-lightdm -l pl.UTF-8
+Bashowe uzupełnianie parametrów dla LightDM.
+
 %prep
 %setup -q
 %patch0 -p1
@@ -205,6 +223,7 @@ rm -rf $RPM_BUILD_ROOT
 	DESTDIR=$RPM_BUILD_ROOT
 
 install -d $RPM_BUILD_ROOT/etc/{pam.d,security,init,rc.d/init.d,dbus-1/system.d} \
+	$RPM_BUILD_ROOT%{bashdir} \
 	$RPM_BUILD_ROOT%{_sysconfdir}/%{name}/%{name}.conf.d \
 	$RPM_BUILD_ROOT/home/services/xdm \
 	$RPM_BUILD_ROOT%{_datadir}/xgreeters \
@@ -230,6 +249,9 @@ touch $RPM_BUILD_ROOT/etc/security/blacklist.%{name}
 rm -rv $RPM_BUILD_ROOT/etc/apparmor.d
 
 %{__rm} -r $RPM_BUILD_ROOT%{_localedir}/{lb,wae}
+
+%{__rm} -r $RPM_BUILD_ROOT%{_datadir}/bash-completion
+cp -p data/bash-completion/{dm-tool,lightdm} $RPM_BUILD_ROOT%{bashdir}
 
 %find_lang %{name} --with-gnome
 
@@ -353,3 +375,8 @@ fi
 %attr(754,root,root) /etc/rc.d/init.d/%{name}
 %config(noreplace) %verify(not md5 mtime size) /etc/init/%{name}.conf
 %{systemdunitdir}/%{name}.service
+
+%files -n bash-completion-lightdm
+%defattr(644,root,root,755)
+%{bashdir}/dm-tool
+%{bashdir}/lightdm
