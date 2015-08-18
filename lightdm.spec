@@ -8,7 +8,7 @@ Summary(hu.UTF-8):	Egy könnyűsúlyú bejelentkezéskezelő
 Name:		lightdm
 # Odd versions are development, use only Even versions here (1.x = x odd/even)
 Version:	1.14.2
-Release:	1
+Release:	2
 # library/bindings are LGPLv2 or LGPLv3, the rest GPLv3+
 License:	(LGPLv2 or LGPLv3) and GPLv3+
 Group:		X11/Applications
@@ -20,7 +20,6 @@ Source3:	%{name}-greeter.pamd
 Source4:	%{name}.init
 Source5:	%{name}-tmpfiles.conf
 Patch0:		config.patch
-Patch1:		upstart-path.patch
 Patch2:		%{name}-nodaemon_option.patch
 Patch3:		%{name}-qt5.patch
 URL:		http://www.freedesktop.org/wiki/Software/LightDM
@@ -164,7 +163,6 @@ Requires:	%{name} = %{version}-%{release}
 Requires:	rc-scripts >= 0.4.3.0
 Requires:	systemd-units >= 38
 Obsoletes:	lightdm-upstart < 1.7.12-6
-Conflicts:	upstart < 0.6
 
 %description init
 Init script for Lightdm.
@@ -191,7 +189,6 @@ Bashowe uzupełnianie parametrów dla LightDM.
 %prep
 %setup -q
 %patch0 -p1
-%patch1 -p1
 %patch2 -p1
 %patch3 -p0
 
@@ -222,7 +219,7 @@ rm -rf $RPM_BUILD_ROOT
 	INSTALL='install -p' \
 	DESTDIR=$RPM_BUILD_ROOT
 
-install -d $RPM_BUILD_ROOT/etc/{pam.d,security,init,rc.d/init.d,dbus-1/system.d} \
+install -d $RPM_BUILD_ROOT/etc/{pam.d,security,rc.d/init.d,dbus-1/system.d} \
 	$RPM_BUILD_ROOT%{bashdir} \
 	$RPM_BUILD_ROOT%{_sysconfdir}/%{name}/%{name}.conf.d \
 	$RPM_BUILD_ROOT/home/services/xdm \
@@ -236,7 +233,6 @@ install -d $RPM_BUILD_ROOT{/var/run/lightdm,%{systemdtmpfilesdir}}
 cp -p %{SOURCE5} $RPM_BUILD_ROOT%{systemdtmpfilesdir}/lightdm.conf
 
 # initscripts
-cp -p data/init/%{name}.conf $RPM_BUILD_ROOT/etc/init
 install -p %{SOURCE4} $RPM_BUILD_ROOT/etc/rc.d/init.d/%{name}
 ln -s /dev/null $RPM_BUILD_ROOT%{systemdunitdir}/%{name}.service
 
@@ -280,7 +276,6 @@ fi
 %post init
 /sbin/chkconfig --add %{name}
 %service -n %{name} restart
-%upstart_post %{name}
 %systemd_reload
 
 %preun
@@ -291,7 +286,6 @@ fi
 
 %postun init
 %systemd_reload
-%upstart_postun %{name}
 
 %files -f %{name}.lang
 %defattr(644,root,root,755)
@@ -373,7 +367,6 @@ fi
 %files init
 %defattr(644,root,root,755)
 %attr(754,root,root) /etc/rc.d/init.d/%{name}
-%config(noreplace) %verify(not md5 mtime size) /etc/init/%{name}.conf
 %{systemdunitdir}/%{name}.service
 
 %files -n bash-completion-lightdm
