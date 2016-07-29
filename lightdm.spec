@@ -8,7 +8,7 @@ Summary(hu.UTF-8):	Egy könnyűsúlyú bejelentkezéskezelő
 Name:		lightdm
 # Odd versions are development, use only Even versions here (1.x = x odd/even)
 Version:	1.18.2
-Release:	1
+Release:	2
 # library/bindings are LGPLv2 or LGPLv3, the rest GPLv3+
 License:	(LGPLv2 or LGPLv3) and GPLv3+
 Group:		X11/Applications
@@ -20,8 +20,9 @@ Source3:	%{name}-greeter.pamd
 Source4:	%{name}.init
 Source5:	%{name}-tmpfiles.conf
 Patch0:		config.patch
-Patch2:		%{name}-nodaemon_option.patch
-Patch3:		%{name}-qt5.patch
+Patch1:		%{name}-nodaemon_option.patch
+Patch2:		%{name}-qt5.patch
+Patch3:		%{name}-fd.patch
 URL:		http://www.freedesktop.org/wiki/Software/LightDM
 BuildRequires:	autoconf
 BuildRequires:	automake >= 1:1.11
@@ -189,7 +190,8 @@ Bashowe uzupełnianie parametrów dla LightDM.
 %prep
 %setup -q
 %patch0 -p1
-%patch2 -p1
+%patch1 -p1
+%patch2 -p0
 %patch3 -p0
 
 %build
