@@ -7,13 +7,13 @@ Summary:	A lightweight display manager
 Summary(hu.UTF-8):	Egy könnyűsúlyú bejelentkezéskezelő
 Name:		lightdm
 # Odd versions are development, use only Even versions here (1.x = x odd/even)
-Version:	1.20.0
+Version:	1.22.0
 Release:	1
 # library/bindings are LGPLv2 or LGPLv3, the rest GPLv3+
 License:	(LGPLv2 or LGPLv3) and GPLv3+
 Group:		X11/Applications
-Source0:	https://launchpad.net/lightdm/1.20/%{version}/+download/%{name}-%{version}.tar.xz
-# Source0-md5:	20911f3621b603bfddf5e8cd6772c2ae
+Source0:	https://launchpad.net/lightdm/1.22/%{version}/+download/%{name}-%{version}.tar.xz
+# Source0-md5:	ee17961d20341344b4a30a45a868a16d
 Source1:	%{name}.pamd
 Source2:	%{name}-autologin.pamd
 Source3:	%{name}-greeter.pamd
