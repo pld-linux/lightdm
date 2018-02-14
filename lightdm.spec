@@ -7,13 +7,13 @@ Summary:	A lightweight display manager
 Summary(hu.UTF-8):	Egy könnyűsúlyú bejelentkezéskezelő
 Name:		lightdm
 # Odd versions are development, use only Even versions here (1.x = x odd/even)
-Version:	1.24.0
+Version:	1.25.2
 Release:	1
 # library/bindings are LGPLv2 or LGPLv3, the rest GPLv3+
 License:	(LGPLv2 or LGPLv3) and GPLv3+
 Group:		X11/Applications
-Source0:	https://launchpad.net/lightdm/1.24/%{version}/+download/%{name}-%{version}.tar.xz
-# Source0-md5:	76d65ba5d1bc93e80b611771698739db
+Source0:	https://github.com/CanonicalLtd/lightdm/releases/download/%{version}/%{name}-%{version}.tar.xz
+# Source0-md5:	1bbba7424fc7734f568578f372ad3fe5
 Source1:	%{name}.pamd
 Source2:	%{name}-autologin.pamd
 Source3:	%{name}-greeter.pamd
@@ -21,7 +21,6 @@ Source4:	%{name}.init
 Source5:	%{name}-tmpfiles.conf
 Patch0:		config.patch
 Patch1:		%{name}-nodaemon_option.patch
-Patch2:		%{name}-qt5.patch
 URL:		http://www.freedesktop.org/wiki/Software/LightDM
 BuildRequires:	autoconf
 BuildRequires:	automake >= 1:1.11
@@ -190,7 +189,6 @@ Bashowe uzupełnianie parametrów dla LightDM.
 %setup -q
 %patch0 -p1
 %patch1 -p1
-%patch2 -p0
 
 %build
 %{__libtoolize}
@@ -302,9 +300,11 @@ fi
 /etc/dbus-1/system.d/org.freedesktop.DisplayManager.conf
 %attr(755,root,root) %{_bindir}/dm-tool
 %attr(755,root,root) %{_sbindir}/lightdm
-%attr(755,root,root) %{_libdir}/lightdm-guest-session
+%attr(755,root,root) %{_libexecdir}/lightdm-guest-session
 %{_libdir}/girepository-1.0/LightDM-1.typelib
 %{systemdtmpfilesdir}/lightdm.conf
+%{_datadir}/dbus-1/interfaces/org.freedesktop.DisplayManager.AccountsService.xml
+%{_datadir}/polkit-1/actions/org.freedesktop.DisplayManager.AccountsService.policy
 %dir %{_datadir}/xgreeters
 %dir %{_datadir}/%{name}
 %dir %{_datadir}/%{name}/remote-sessions
