@@ -7,13 +7,13 @@ Summary:	A lightweight display manager
 Summary(hu.UTF-8):	Egy könnyűsúlyú bejelentkezéskezelő
 Name:		lightdm
 # Odd versions are development, use only Even versions here (1.x = x odd/even)
-Version:	1.25.2
+Version:	1.26.0
 Release:	1
 # library/bindings are LGPLv2 or LGPLv3, the rest GPLv3+
 License:	(LGPLv2 or LGPLv3) and GPLv3+
 Group:		X11/Applications
 Source0:	https://github.com/CanonicalLtd/lightdm/releases/download/%{version}/%{name}-%{version}.tar.xz
-# Source0-md5:	1bbba7424fc7734f568578f372ad3fe5
+# Source0-md5:	c50259aebd72c677f2850e1ae5337ae0
 Source1:	%{name}.pamd
 Source2:	%{name}-autologin.pamd
 Source3:	%{name}-greeter.pamd
@@ -303,6 +303,7 @@ fi
 %attr(755,root,root) %{_libexecdir}/lightdm-guest-session
 %{_libdir}/girepository-1.0/LightDM-1.typelib
 %{systemdtmpfilesdir}/lightdm.conf
+%{_datadir}/accountsservice/interfaces/org.freedesktop.DisplayManager.AccountsService.xml
 %{_datadir}/dbus-1/interfaces/org.freedesktop.DisplayManager.AccountsService.xml
 %{_datadir}/polkit-1/actions/org.freedesktop.DisplayManager.AccountsService.policy
 %dir %{_datadir}/xgreeters
