@@ -145,9 +145,7 @@ LightDM clients to use to interface with LightDM.
 %package apidocs
 Summary:	lightdm API documentation
 Group:		Documentation
-%if "%{_rpmversion}" >= "5"
 BuildArch:	noarch
-%endif
 
 %description apidocs
 lightdm API documentation.
