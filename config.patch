@@ -13,7 +13,7 @@
  #user-authority-in-system-dir=false
  #guest-account-script=guest-account
 @@ -93,7 +93,7 @@
- #user-session=default
+ #allow-user-switching=true
  #allow-guest=true
  #guest-session=
 -#session-wrapper=lightdm-session

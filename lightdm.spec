@@ -1,19 +1,18 @@
 # Conditional build:
 %bcond_with	tests		# build without tests (tests fail mostly)
-%bcond_without	qt4		# build without Qt4
 %bcond_without	qt5		# build without Qt5
 
 Summary:	A lightweight display manager
 Summary(hu.UTF-8):	Egy könnyűsúlyú bejelentkezéskezelő
 Name:		lightdm
 # Odd versions are development, use only Even versions here (1.x = x odd/even)
-Version:	1.30.0
+Version:	1.32.0
 Release:	1
 # library/bindings are LGPLv2 or LGPLv3, the rest GPLv3+
 License:	(LGPLv2 or LGPLv3) and GPLv3+
 Group:		X11/Applications
 Source0:	https://github.com/CanonicalLtd/lightdm/releases/download/%{version}/%{name}-%{version}.tar.xz
-# Source0-md5:	c566ea595f2b81e68684be9f8dbcbb42
+# Source0-md5:	e62a5da6c35f612e4d9575eda5c8d467
 Source1:	%{name}.pamd
 Source2:	%{name}-autologin.pamd
 Source3:	%{name}-greeter.pamd
@@ -47,12 +46,6 @@ BuildRequires:	xorg-lib-libX11-devel
 BuildRequires:	xorg-lib-libXdmcp-devel
 BuildRequires:	xz
 BuildRequires:	yelp-tools
-%if %{with qt4}
-BuildRequires:	QtCore-devel
-BuildRequires:	QtDBus-devel
-BuildRequires:	QtGui-devel
-BuildRequires:	qt4-build
-%endif
 %if %{with qt5}
 BuildRequires:	Qt5Core-devel
 BuildRequires:	Qt5DBus-devel
@@ -105,29 +98,10 @@ Requires:	%{name}-libs-gobject = %{version}-%{release}
 This package contains development files for a GObject based library
 for LightDM clients to use to interface with LightDM.
 
-%package libs-qt4
-Summary:	LightDM Qt4 client library
-Group:		Libraries
-Obsoletes:	lightdm-libs-qt
-Conflicts:	lightdm-libs < 1.7.0-0.6
-
-%description libs-qt4
-This package contains a Qt4 based library for LightDM clients to use
-to interface with LightDM.
-
-%package libs-qt4-devel
-Summary:	Development files for %{name}-qt4
-Group:		Development/Libraries
-Requires:	%{name}-libs-qt4 = %{version}-%{release}
-Obsoletes:	lightdm-libs-qt-devel
-
-%description libs-qt4-devel
-This package contains development files for a Qt4 based library for
-LightDM clients to use to interface with LightDM.
-
 %package libs-qt5
 Summary:	LightDM Qt5 client library
 Group:		Libraries
+Obsoletes:	lightdm-libs-qt4 < 1.32.0
 
 %description libs-qt5
 This package contains a Qt5 based library for LightDM clients to use
@@ -137,6 +111,7 @@ to interface with LightDM.
 Summary:	Development files for %{name}-qt5
 Group:		Development/Libraries
 Requires:	%{name}-libs-qt5 = %{version}-%{release}
+Obsoletes:	lightdm-libs-qt4-devel < 1.32.0
 
 %description libs-qt5-devel
 This package contains development files for a Qt5 based library for
@@ -200,7 +175,6 @@ Bashowe uzupełnianie parametrów dla LightDM.
 	--disable-static \
 	%{__enable tests} \
 	--enable-liblightdm-gobject \
-	%{?with_qt4:--enable-liblightdm-qt} \
 	%{?with_qt5:--enable-liblightdm-qt5} \
 	--with-html-dir=%{_gtkdocdir} \
 	--enable-gtk-doc \
@@ -263,9 +237,6 @@ fi
 %post	libs-gobject -p /sbin/ldconfig
 %postun	libs-gobject -p /sbin/ldconfig
 
-%post	libs-qt4 -p /sbin/ldconfig
-%postun	libs-qt4 -p /sbin/ldconfig
-
 %post	libs-qt5 -p /sbin/ldconfig
 %postun	libs-qt5 -p /sbin/ldconfig
 
@@ -295,7 +266,7 @@ fi
 %attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) /etc/pam.d/lightdm-autologin
 %attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) /etc/pam.d/lightdm-greeter
 %attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) /etc/security/blacklist.%{name}
-/etc/dbus-1/system.d/org.freedesktop.DisplayManager.conf
+%{_datadir}/dbus-1/system.d/org.freedesktop.DisplayManager.conf
 %attr(755,root,root) %{_bindir}/dm-tool
 %attr(755,root,root) %{_sbindir}/lightdm
 %attr(755,root,root) %{_libexecdir}/lightdm-guest-session
@@ -320,20 +291,6 @@ fi
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/liblightdm-gobject-1.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/liblightdm-gobject-1.so.0
-
-%if %{with qt4}
-%files libs-qt4
-%defattr(644,root,root,755)
-%attr(755,root,root) %{_libdir}/liblightdm-qt-3.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/liblightdm-qt-3.so.0
-
-%files libs-qt4-devel
-%defattr(644,root,root,755)
-%{_libdir}/liblightdm-qt-3.la
-%attr(755,root,root) %{_libdir}/liblightdm-qt-3.so
-%{_includedir}/lightdm-qt-3
-%{_pkgconfigdir}/liblightdm-qt-3.pc
-%endif
 
 %if %{with qt5}
 %files libs-qt5

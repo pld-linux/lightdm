@@ -9,4 +9,4 @@ diff -up lightdm-1.7.11/src/lightdm.c.nodaemon_option lightdm-1.7.11/src/lightdm
 +    /*  return EXIT_FAILURE; */
      }
  
-     if (show_version)
+     /* Show combined configuration if user requested it */
