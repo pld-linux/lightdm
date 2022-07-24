@@ -39,6 +39,7 @@ BuildRequires:	pam-devel
 BuildRequires:	perl-XML-Parser
 BuildRequires:	perl-base
 BuildRequires:	pkgconfig
+BuildRequires:	rpm-build >= 4.6
 BuildRequires:	rpmbuild(macros) >= 1.690
 BuildRequires:	tar >= 1:1.22
 BuildRequires:	vala
