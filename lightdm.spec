@@ -175,7 +175,6 @@ Bashowe uzupełnianie parametrów dla LightDM.
 	--disable-silent-rules \
 	--disable-static \
 	%{__enable tests} \
-	--enable-liblightdm-gobject \
 	%{?with_qt5:--enable-liblightdm-qt5} \
 	--with-html-dir=%{_gtkdocdir} \
 	--enable-gtk-doc \
